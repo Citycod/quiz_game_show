@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Display - Quiz Game Show</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="question.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <div class="container">
+        <!-- Round Indicator -->
+        <div class="round-indicator" id="roundIndicator">
+            <span id="roundText">Waiting to Start...</span>
+        </div>
+
+        <!-- Question Section -->
+        <div class="question-section">
+            <div class="question-number" id="questionNumber">Question 1 of 20</div>
+            <div class="question-text" id="questionText">
+                Waiting for question...
+            </div>
+        </div>
+
+        <!-- Answer Options -->
+        <div class="options-grid" id="optionsGrid">
+            <div class="option option-a">
+                <span class="option-letter">A</span>
+                <span class="option-text" id="optionA">Option A</span>
+            </div>
+            <div class="option option-b">
+                <span class="option-letter">B</span>
+                <span class="option-text" id="optionB">Option B</span>
+            </div>
+            <div class="option option-c">
+                <span class="option-letter">C</span>
+                <span class="option-text" id="optionC">Option C</span>
+            </div>
+            <div class="option option-d">
+                <span class="option-letter">D</span>
+                <span class="option-text" id="optionD">Option D</span>
+            </div>
+        </div>
+
+        <!-- Timer Bar -->
+        <div class="timer-container">
+            <div class="timer-bar" id="timerBar"></div>
+            <div class="timer-text" id="timerText">10</div>
+        </div>
+
+        <!-- Dramatic Reveal Overlay -->
+        <div class="reveal-overlay" id="revealOverlay">
+            <div class="reveal-content">
+                <h2 class="reveal-title">ANSWERS LOCKED!</h2>
+                <div class="reveal-players">
+                    <div class="reveal-player">
+                        <div class="player-label">Player 1</div>
+                        <div class="player-answer" id="player1Answer">?</div>
+                    </div>
+                    <div class="reveal-vs">VS</div>
+                    <div class="reveal-player">
+                        <div class="player-label">Player 2</div>
+                        <div class="player-answer" id="player2Answer">?</div>
+                    </div>
+                </div>
+                <div class="correct-answer-display" id="correctAnswerDisplay"></div>
+            </div>
+        </div>
+
+        <!-- Lifeline Notification -->
+        <div class="lifeline-notification" id="lifelineNotification">
+            <div class="lifeline-icon">⚡</div>
+            <div class="lifeline-text" id="lifelineText">Player 1 activated 50/50!</div>
+        </div>
+
+        <!-- Streak Celebration -->
+        <div class="streak-celebration" id="streakCelebration">
+            <div class="combo-text">COMBO!</div>
+            <div class="streak-multiplier" id="streakMultiplier">2x MULTIPLIER</div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="question.js"></script>
+</body>
+</html>

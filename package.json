@@ -1,0 +1,23 @@
+{
+    "name": "quiz-game-show",
+    "version": "1.0.0",
+    "description": "Multi-display quiz game show platform with real-time synchronization",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "node server.js"
+    },
+    "keywords": [
+        "quiz",
+        "game-show",
+        "websocket",
+        "real-time"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "express": "^4.18.2",
+        "socket.io": "^4.6.1",
+        "csv-parser": "^3.0.0"
+    }
+}

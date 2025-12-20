@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoreboard - Quiz Game Show</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="scoreboard.css">
+</head>
+
+<body>
+    <!-- Sudden Death Banner -->
+    <div class="sudden-death-banner" id="suddenDeathBanner">
+        ⚡ SUDDEN DEATH MODE ⚡
+    </div>
+
+    <div class="scoreboard-container">
+        <!-- Player 1 Section -->
+        <div class="player-section player-1">
+            <div class="player-header">
+                <h2 class="player-name">PLAYER 1</h2>
+                <div class="crown" id="crown1">👑</div>
+            </div>
+
+            <div class="score-display">
+                <div class="score-label">SCORE</div>
+                <div class="score-value" id="score1">0</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Streak</div>
+                    <div class="stat-value streak-value" id="streak1">0</div>
+                    <div class="multiplier-badge" id="multiplier1"></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Penalties</div>
+                    <div class="stat-value penalty-value" id="penalties1">0</div>
+                </div>
+            </div>
+
+            <div class="lifeline-status">
+                <div class="lifeline-label">LIFELINE</div>
+                <div class="lifeline-icons">
+                    <div class="lifeline-icon" id="lifeline1" title="Not used">
+                        <span class="icon-text">⚡</span>
+                        <span class="lifeline-name" id="lifelineName1">Available</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="combo-effect" id="combo1">
+                <div class="combo-text">COMBO!</div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider">
+            <div class="vs-text">VS</div>
+        </div>
+
+        <!-- Player 2 Section -->
+        <div class="player-section player-2">
+            <div class="player-header">
+                <h2 class="player-name">PLAYER 2</h2>
+                <div class="crown" id="crown2">👑</div>
+            </div>
+
+            <div class="score-display">
+                <div class="score-label">SCORE</div>
+                <div class="score-value" id="score2">0</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Streak</div>
+                    <div class="stat-value streak-value" id="streak2">0</div>
+                    <div class="multiplier-badge" id="multiplier2"></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Penalties</div>
+                    <div class="stat-value penalty-value" id="penalties2">0</div>
+                </div>
+            </div>
+
+            <div class="lifeline-status">
+                <div class="lifeline-label">LIFELINE</div>
+                <div class="lifeline-icons">
+                    <div class="lifeline-icon" id="lifeline2" title="Not used">
+                        <span class="icon-text">⚡</span>
+                        <span class="lifeline-name" id="lifelineName2">Available</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="combo-effect" id="combo2">
+                <div class="combo-text">COMBO!</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="scoreboard.js"></script>
+</body>
+
+</html>
