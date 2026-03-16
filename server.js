@@ -14,6 +14,13 @@ const io = socketIO(server);
 const gameEngine = new GameEngine();
 const questionManager = new QuestionManager();
 
+// Runtime settings (can be changed by admin during the game)
+const runtimeSettings = {
+    questionDuration: config.rounds[0].questionDuration,
+    autoAdvanceDelay: 5,
+    revealDelay: config.dramaticReveal.delaySeconds
+};
+
 // Middleware
 app.use(express.json());
 app.use(express.static('public'));
@@ -47,6 +54,49 @@ const connectedClients = {
     admin: []
 };
 
+// Helper: broadcast player connection status to admins
+function broadcastPlayerStatus() {
+    const status = {
+        1: connectedClients.players[1] && connectedClients.players[1].length > 0,
+        2: connectedClients.players[2] && connectedClients.players[2].length > 0
+    };
+    connectedClients.admin.forEach(adminSocketId => {
+        io.to(adminSocketId).emit('player-connection-status', status);
+    });
+}
+
+// Helper: auto-advance to next question
+function autoAdvanceNextQuestion() {
+    const question = questionManager.getNextQuestion();
+    if (question) {
+        gameEngine.loadQuestion(question);
+        io.emit('new-question', question);
+
+        // Use runtime duration or round config
+        const roundConfig = gameEngine.getCurrentRoundConfig();
+        const duration = runtimeSettings.questionDuration || roundConfig.questionDuration;
+        io.emit('timer-start', { duration });
+    } else {
+        // No more questions
+        if (gameEngine.shouldEnterSuddenDeath()) {
+            gameEngine.startSuddenDeath();
+            io.emit('sudden-death-start');
+            questionManager.reset();
+            const sdQuestion = questionManager.getNextQuestion();
+            if (sdQuestion) {
+                gameEngine.loadQuestion(sdQuestion);
+                io.emit('new-question', sdQuestion);
+                io.emit('timer-start', { duration: config.suddenDeath.questionDuration });
+            }
+        } else {
+            io.emit('round-ended', {
+                round: gameEngine.getGameState().currentRound,
+                scores: gameEngine.getScores()
+            });
+        }
+    }
+}
+
 // Socket.IO connection handling
 io.on('connection', (socket) => {
     console.log(`✅ Client connected: ${socket.id}`);
@@ -72,6 +122,8 @@ io.on('connection', (socket) => {
                 console.log(`🎮 Player ${playerId} pad connected`);
                 // Send current game state to player
                 socket.emit('game-state', gameEngine.getGameState());
+                // Notify admins of player connection
+                broadcastPlayerStatus();
                 break;
             case 'admin':
                 connectedClients.admin.push(socket.id);
@@ -79,6 +131,9 @@ io.on('connection', (socket) => {
                 // Send current state to admin
                 socket.emit('game-state', gameEngine.getGameState());
                 socket.emit('scores', gameEngine.getScores());
+                socket.emit('settings-sync', runtimeSettings);
+                // Send current player connection status
+                broadcastPlayerStatus();
                 break;
         }
     });
@@ -87,14 +142,17 @@ io.on('connection', (socket) => {
     socket.on('start-round', (roundNumber) => {
         try {
             const roundConfig = gameEngine.startRound(roundNumber);
+            // Update runtime duration from round config
+            runtimeSettings.questionDuration = roundConfig.questionDuration;
             io.emit('round-started', { round: roundNumber, config: roundConfig });
+            io.emit('settings-sync', runtimeSettings);
 
             // Load first question
             const question = questionManager.getNextQuestion();
             if (question) {
                 gameEngine.loadQuestion(question);
                 io.emit('new-question', question);
-                io.emit('timer-start', { duration: roundConfig.questionDuration });
+                io.emit('timer-start', { duration: runtimeSettings.questionDuration });
             }
 
             console.log(`🎬 Round ${roundNumber} started by admin`);
@@ -107,10 +165,7 @@ io.on('connection', (socket) => {
     socket.on('load-questions-csv', async (filePath) => {
         try {
             await questionManager.loadFromCSV(filePath);
-            socket.emit('questions-loaded', {
-                count: questionManager.getTotalQuestions()
-            });
-            io.to(connectedClients.admin).emit('questions-loaded', {
+            io.emit('questions-loaded', {
                 count: questionManager.getTotalQuestions()
             });
         } catch (error) {
@@ -128,35 +183,25 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Admin: Next question
+    // Admin: Next question (manual fallback)
     socket.on('next-question', () => {
-        const question = questionManager.getNextQuestion();
-        if (question) {
-            gameEngine.loadQuestion(question);
-            io.emit('new-question', question);
+        autoAdvanceNextQuestion();
+    });
 
-            const roundConfig = gameEngine.getCurrentRoundConfig();
-            io.emit('timer-start', { duration: roundConfig.questionDuration });
-        } else {
-            // No more questions, check for sudden death or end round
-            if (gameEngine.shouldEnterSuddenDeath()) {
-                gameEngine.startSuddenDeath();
-                io.emit('sudden-death-start');
-                // Load a question for sudden death
-                questionManager.reset();
-                const sdQuestion = questionManager.getNextQuestion();
-                if (sdQuestion) {
-                    gameEngine.loadQuestion(sdQuestion);
-                    io.emit('new-question', sdQuestion);
-                    io.emit('timer-start', { duration: config.suddenDeath.questionDuration });
-                }
-            } else {
-                io.emit('round-ended', {
-                    round: gameEngine.getGameState().currentRound,
-                    scores: gameEngine.getScores()
-                });
-            }
+    // Admin: Update settings
+    socket.on('update-settings', (settings) => {
+        if (settings.questionDuration !== undefined) {
+            runtimeSettings.questionDuration = Math.max(5, Math.min(120, settings.questionDuration));
         }
+        if (settings.autoAdvanceDelay !== undefined) {
+            runtimeSettings.autoAdvanceDelay = Math.max(3, Math.min(10, settings.autoAdvanceDelay));
+        }
+        if (settings.revealDelay !== undefined) {
+            runtimeSettings.revealDelay = Math.max(1, Math.min(5, settings.revealDelay));
+        }
+        // Broadcast updated settings to all admins
+        io.emit('settings-sync', runtimeSettings);
+        console.log('⚙️ Settings updated:', runtimeSettings);
     });
 
     // Player: Submit answer
@@ -169,10 +214,15 @@ io.on('connection', (socket) => {
             // Confirm to player
             socket.emit('answer-submitted', { success: true });
 
+            // Broadcast lock-in to all displays (for distinct sounds)
+            io.emit('player-locked-in', { playerId });
+
             // Update admin
-            io.to(connectedClients.admin).emit('player-answered', {
-                playerId,
-                answered: true
+            connectedClients.admin.forEach(adminId => {
+                io.to(adminId).emit('player-answered', {
+                    playerId,
+                    answered: true
+                });
             });
 
             // If both players answered and dramatic reveal is enabled
@@ -211,10 +261,16 @@ io.on('connection', (socket) => {
                                     winner,
                                     finalScores: gameEngine.getScores()
                                 });
+                                return;
                             }
                         }
 
-                    }, config.dramaticReveal.delaySeconds * 1000);
+                        // AUTO-ADVANCE: load next question after delay
+                        setTimeout(() => {
+                            autoAdvanceNextQuestion();
+                        }, runtimeSettings.autoAdvanceDelay * 1000);
+
+                    }, runtimeSettings.revealDelay * 1000);
                 }, 100);
             }
 
@@ -242,7 +298,9 @@ io.on('connection', (socket) => {
                 });
 
                 // Update scoreboard
-                io.to(connectedClients.scoreboard).emit('scores-update', gameEngine.getScores());
+                connectedClients.scoreboard.forEach(id => {
+                    io.to(id).emit('scores-update', gameEngine.getScores());
+                });
 
                 console.log(`🎯 Player ${playerId} used ${lifelineType}`);
             } else {
@@ -283,9 +341,10 @@ io.on('connection', (socket) => {
     // Timer expired
     socket.on('timer-expired', () => {
         // Process answers even if not both answered
-        const correctAnswer = questionManager.getCorrectAnswer(
-            gameEngine.getGameState().currentQuestion.id
-        );
+        const currentQ = gameEngine.getGameState().currentQuestion;
+        if (!currentQ) return;
+
+        const correctAnswer = questionManager.getCorrectAnswer(currentQ.id);
 
         // Auto-submit null answers for players who didn't answer
         const gameState = gameEngine.getGameState();
@@ -311,6 +370,11 @@ io.on('connection', (socket) => {
         });
 
         io.emit('scores-update', gameEngine.getScores());
+
+        // AUTO-ADVANCE after timer expires too
+        setTimeout(() => {
+            autoAdvanceNextQuestion();
+        }, runtimeSettings.autoAdvanceDelay * 1000);
     });
 
     // Disconnect handling
@@ -323,7 +387,12 @@ io.on('connection', (socket) => {
         connectedClients.admin = connectedClients.admin.filter(id => id !== socket.id);
 
         Object.keys(connectedClients.players).forEach(playerId => {
+            const before = connectedClients.players[playerId].length;
             connectedClients.players[playerId] = connectedClients.players[playerId].filter(id => id !== socket.id);
+            if (before !== connectedClients.players[playerId].length) {
+                // Player disconnected, notify admins
+                broadcastPlayerStatus();
+            }
         });
     });
 });

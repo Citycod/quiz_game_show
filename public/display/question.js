@@ -1,4 +1,8 @@
 const socket = io();
+const audio = new AudioEngine();
+
+// Init audio on first user interaction
+document.addEventListener('click', () => { audio.init(); audio.resume(); }, { once: true });
 
 // Identify as question display
 socket.emit('identify', { type: 'question-display' });
@@ -23,28 +27,8 @@ const lifelineText = document.getElementById('lifelineText');
 const streakCelebration = document.getElementById('streakCelebration');
 const streakMultiplier = document.getElementById('streakMultiplier');
 
-// Audio elements
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const audioElements = {
-    countdown: createAudio('/audio/countdown.mp3'),
-    countdownUrgent: createAudio('/audio/countdown-urgent.mp3'),
-    correct: createAudio('/audio/correct.mp3'),
-    correctStreak: createAudio('/audio/correct-streak.mp3'),
-    wrong: createAudio('/audio/wrong.mp3'),
-    drumroll: createAudio('/audio/drumroll.mp3'),
-    lifeline: createAudio('/audio/lifeline-activate.mp3'),
-    combo: createAudio('/audio/combo.mp3'),
-    roundTransition: createAudio('/audio/round-transition.mp3'),
-    suddenDeath: createAudio('/audio/sudden-death.mp3')
-};
-
-function createAudio(src) {
-    const audio = new Audio(src);
-    audio.volume = 0.7;
-    return audio;
-}
-
 let timerInterval = null;
+let tickInterval = null;
 let currentDuration = 10;
 let timeRemaining = 10;
 
@@ -57,7 +41,8 @@ socket.on('round-started', (data) => {
     // Update theme
     document.body.className = `round-${round}`;
 
-    playAudio('roundTransition');
+    audio.playRoundTransition();
+    audio.startBackgroundMusic();
 });
 
 // New question loaded
@@ -82,13 +67,15 @@ socket.on('new-question', (question) => {
 socket.on('timer-start', (data) => {
     timeRemaining = data.duration;
     currentDuration = data.duration;
+    timerBar.style.width = '100%';
+    timerText.textContent = timeRemaining;
+    timerBar.classList.remove('urgent');
     startTimer();
 });
 
 function startTimer() {
     if (timerInterval) clearInterval(timerInterval);
-
-    playAudio('countdown');
+    if (tickInterval) clearInterval(tickInterval);
 
     timerInterval = setInterval(() => {
         timeRemaining--;
@@ -97,38 +84,45 @@ function startTimer() {
         timerBar.style.width = percentage + '%';
         timerText.textContent = timeRemaining;
 
-        // Last 10 seconds - urgent mode
-        if (timeRemaining <= 10 && !timerBar.classList.contains('urgent')) {
-            timerBar.classList.add('urgent');
-            stopAudio('countdown');
-            playAudio('countdownUrgent');
+        // Ticking sounds with two tiers
+        if (timeRemaining <= 10 && timeRemaining > 5) {
+            audio.playSlowTick();
+        } else if (timeRemaining <= 5 && timeRemaining > 0) {
+            audio.playFastTick();
+            if (!timerBar.classList.contains('urgent')) {
+                timerBar.classList.add('urgent');
+            }
         }
 
         if (timeRemaining <= 0) {
             clearInterval(timerInterval);
             timerBar.classList.remove('urgent');
-            stopAudio('countdownUrgent');
             socket.emit('timer-expired');
         }
     }, 1000);
 }
 
+// Player locked in their answer (distinct sounds)
+socket.on('player-locked-in', (data) => {
+    if (data.playerId === 1) {
+        audio.playPlayer1LockIn();
+    } else if (data.playerId === 2) {
+        audio.playPlayer2LockIn();
+    }
+});
+
 // Reveal start (dramatic delay)
 socket.on('reveal-start', () => {
     if (timerInterval) {
         clearInterval(timerInterval);
-        stopAudio('countdown');
-        stopAudio('countdownUrgent');
     }
 
     revealOverlay.classList.add('active');
-    playAudio('drumroll');
+    audio.playDrumroll();
 });
 
 // Reveal results
 socket.on('reveal-results', (data) => {
-    stopAudio('drumroll');
-
     const { correctAnswer, player1, player2 } = data;
 
     // Show player answers
@@ -154,13 +148,12 @@ socket.on('reveal-results', (data) => {
 
     // Play sounds
     if (player1.correct || player2.correct) {
+        audio.playCorrect();
         if (player1.streak >= 3 || player2.streak >= 3) {
-            playAudio('correctStreak');
-        } else {
-            playAudio('correct');
+            setTimeout(() => audio.playCombo(), 400);
         }
     } else {
-        playAudio('wrong');
+        audio.playWrong();
     }
 
     // Check for streak celebrations
@@ -168,10 +161,10 @@ socket.on('reveal-results', (data) => {
         showStreakCelebration(Math.max(player1.streak || 0, player2.streak || 0));
     }
 
-    // Hide reveal after 5 seconds
+    // Reveal auto-hides (server will auto-advance next question)
     setTimeout(() => {
         revealOverlay.classList.remove('active');
-    }, 5000);
+    }, 4000);
 });
 
 // Lifeline used
@@ -180,7 +173,7 @@ socket.on('lifeline-used', (data) => {
 
     lifelineText.textContent = `Player ${playerId} activated ${lifelineType}!`;
     lifelineNotification.classList.add('active');
-    playAudio('lifeline');
+    audio.playLifelineActivation();
 
     // Handle 50/50 - eliminate options
     if (lifelineType === '50/50' && eliminatedOptions) {
@@ -204,7 +197,6 @@ function showStreakCelebration(streak) {
 
     streakMultiplier.textContent = `${multiplier} MULTIPLIER`;
     streakCelebration.classList.add('active');
-    playAudio('combo');
 
     setTimeout(() => {
         streakCelebration.classList.remove('active');
@@ -215,44 +207,23 @@ function showStreakCelebration(streak) {
 socket.on('sudden-death-start', () => {
     document.body.className = 'sudden-death';
     roundText.textContent = 'SUDDEN DEATH';
-    playAudio('suddenDeath');
+    audio.playSuddenDeath();
 });
 
 // Game over
 socket.on('game-over', (data) => {
     roundText.textContent = `WINNER: PLAYER ${data.winner}!`;
-    stopAllAudio();
+    audio.stopAll();
 });
-
-// Audio helper functions
-function playAudio(name) {
-    if (audioElements[name]) {
-        audioElements[name].currentTime = 0;
-        audioElements[name].play().catch(e => console.log('Audio play failed:', e));
-    }
-}
-
-function stopAudio(name) {
-    if (audioElements[name]) {
-        audioElements[name].pause();
-        audioElements[name].currentTime = 0;
-    }
-}
-
-function stopAllAudio() {
-    Object.values(audioElements).forEach(audio => {
-        audio.pause();
-        audio.currentTime = 0;
-    });
-}
 
 // Game paused/resumed
 socket.on('game-paused', () => {
     if (timerInterval) clearInterval(timerInterval);
-    stopAllAudio();
+    audio.stopBackgroundMusic();
 });
 
 socket.on('game-resumed', () => {
+    audio.startBackgroundMusic();
     if (timeRemaining > 0) {
         startTimer();
     }
@@ -264,7 +235,7 @@ socket.on('game-reset', () => {
     roundText.textContent = 'Waiting to Start...';
     questionText.textContent = 'Waiting for question...';
     if (timerInterval) clearInterval(timerInterval);
-    stopAllAudio();
+    audio.stopAll();
     revealOverlay.classList.remove('active');
 });
 
