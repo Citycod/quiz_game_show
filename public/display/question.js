@@ -57,6 +57,7 @@ socket.on('new-question', (question) => {
     // Reset options
     document.querySelectorAll('.option').forEach(opt => {
         opt.classList.remove('correct', 'wrong', 'eliminated');
+        opt.style.display = 'flex'; // Restore visibility if hidden by round-end
     });
 
     // Hide reveal overlay
@@ -210,9 +211,43 @@ socket.on('sudden-death-start', () => {
     audio.playSuddenDeath();
 });
 
+// Round ended
+socket.on('round-ended', (data) => {
+    if (timerInterval) clearInterval(timerInterval);
+    revealOverlay.classList.remove('active');
+    timerBar.style.width = '0%';
+    timerText.textContent = '';
+    
+    questionNumber.textContent = `End of Round ${data.round}`;
+    questionText.textContent = 'STANDBY FOR NEXT ROUND...';
+    
+    // Clear options
+    optionA.textContent = '';
+    optionB.textContent = '';
+    optionC.textContent = '';
+    optionD.textContent = '';
+    document.querySelectorAll('.option').forEach(opt => {
+        opt.classList.remove('correct', 'wrong', 'eliminated');
+        opt.style.display = 'none'; // Hide grid
+    });
+});
+
 // Game over
 socket.on('game-over', (data) => {
-    roundText.textContent = `WINNER: PLAYER ${data.winner}!`;
+    if (timerInterval) clearInterval(timerInterval);
+    revealOverlay.classList.remove('active');
+    timerBar.style.width = '0%';
+    timerText.textContent = '';
+    
+    questionNumber.textContent = 'GAME OVER';
+    questionText.textContent = `🏆 WINNER: PLAYER ${data.winner} 🏆`;
+    
+    // Clear options
+    document.querySelectorAll('.option').forEach(opt => {
+        opt.style.display = 'none';
+    });
+    
+    roundText.textContent = `FINAL SCORE: P1(${data.finalScores.player1.score}) - P2(${data.finalScores.player2.score})`;
     audio.stopAll();
 });
 

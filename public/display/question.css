@@ -209,12 +209,16 @@ body.sudden-death .round-indicator {
 
 /* Timer Container */
 .timer-container {
-    position: relative;
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    width: 250px;
     height: 60px;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     border-radius: 30px;
     overflow: hidden;
+    z-index: 100;
 }
 
 .timer-bar {
@@ -222,6 +226,7 @@ body.sudden-death .round-indicator {
     background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
     transition: width 0.1s linear;
     border-radius: 30px;
+    width: 100%;
 }
 
 .timer-bar.urgent {
@@ -416,9 +421,9 @@ body.sudden-death .round-indicator {
     .option { padding: 20px; }
     .option-letter { font-size: 1.8rem; width: 45px; height: 45px; }
     .option-text { font-size: 1.3rem; }
-    .timer-container { height: 45px; }
+    .timer-container { height: 45px; width: 180px; top: 20px; right: 20px; }
     .timer-text { font-size: 1.5rem; }
-    .round-indicator { font-size: 1.4rem; padding: 14px; }
+    .round-indicator { font-size: 1.4rem; padding: 14px; margin-right: 200px; }
     .reveal-title { font-size: 2.5rem; }
     .reveal-players { gap: 40px; }
     .player-answer { font-size: 3rem; width: 100px; height: 100px; }
@@ -433,9 +438,9 @@ body.sudden-death .round-indicator {
     .option { padding: 14px; gap: 12px; border-radius: 10px; }
     .option-letter { font-size: 1.3rem; width: 36px; height: 36px; }
     .option-text { font-size: 1rem; }
-    .timer-container { height: 36px; border-radius: 18px; }
+    .timer-container { height: 36px; width: 120px; border-radius: 18px; top: 12px; right: 12px; }
     .timer-text { font-size: 1.2rem; }
-    .round-indicator { font-size: 1rem; padding: 10px; margin-bottom: 12px; border-radius: 12px; }
+    .round-indicator { font-size: 1rem; padding: 10px; margin-bottom: 12px; border-radius: 12px; margin-right: 130px; }
     .reveal-title { font-size: 1.8rem; margin-bottom: 30px; }
     .reveal-players { flex-direction: column; gap: 20px; }
     .player-answer { font-size: 2.5rem; width: 80px; height: 80px; }
