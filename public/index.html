@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game Show | Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/display/question.css">
+    <style>
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .portal-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-15px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .portal-icon {
+            font-size: 4rem;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+
+        .portal-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .portal-desc {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ffffff, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            opacity: 0.7;
+            letter-spacing: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <div class="container">
+        <header class="hero-section">
+            <h1 class="hero-title">Quiz Game Show</h1>
+            <p class="hero-subtitle">MULTIVERSE EDITION</p>
+        </header>
+
+        <main class="portal-grid">
+            <a href="/admin" class="portal-card">
+                <div class="portal-icon">⚙️</div>
+                <h2 class="portal-title">ADMIN PANEL</h2>
+                <p class="portal-desc">Control the game, manage questions, and handle the host duties.</p>
+            </a>
+
+            <a href="/player/1" class="portal-card">
+                <div class="portal-icon">🎮</div>
+                <h2 class="portal-title">PLAYER 1</h2>
+                <p class="portal-desc">Join the hot seat and compete for the ultimate prize.</p>
+            </a>
+
+            <a href="/player/2" class="portal-card">
+                <div class="portal-icon">🕹️</div>
+                <h2 class="portal-title">PLAYER 2</h2>
+                <p class="portal-desc">The challenger awaits! Enter the game as the second contestant.</p>
+            </a>
+
+            <a href="/display/question" class="portal-card">
+                <div class="portal-icon">📺</div>
+                <h2 class="portal-title">MAIN DISPLAY</h2>
+                <p class="portal-desc">The audience screen showing questions, timers, and results.</p>
+            </a>
+
+            <a href="/display/scoreboard" class="portal-card">
+                <div class="portal-icon">📊</div>
+                <h2 class="portal-title">SCOREBOARD</h2>
+                <p class="portal-desc">Dedicated live ranking and statistics display.</p>
+            </a>
+        </main>
+
+        <footer style="text-align: center; padding: 40px; opacity: 0.5; font-size: 0.9rem;">
+            &copy; 2026 Quiz Game Show Engine. Ready for battle.
+        </footer>
+    </div>
+</body>
+</html>

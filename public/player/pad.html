@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Player Pad | Quiz Game Show</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/player/pad.css">
+</head>
+<body class="player-pad">
+    <div class="status-bar" id="statusBar">
+        <span id="playerName">PLAYER </span>
+        <span id="playerScore">SCORE: 0</span>
+    </div>
+
+    <div class="game-info">
+        <div id="roundText">WAITING FOR GAME</div>
+        <div id="questionNumber">--</div>
+    </div>
+
+    <div class="pad-container">
+        <div id="waitingScreen" class="overlay active">
+            <div class="loader"></div>
+            <p>Waiting for host to start...</p>
+        </div>
+
+        <div id="answerFeedback" class="overlay">
+            <div id="feedbackIcon">✅</div>
+            <p id="feedbackText">ANSWER SUBMITTED</p>
+        </div>
+
+        <div class="options-grid" id="optionsGrid">
+            <button class="pad-btn btn-a" onclick="submitAnswer('A')" id="btnA">
+                <span class="btn-letter">A</span>
+            </button>
+            <button class="pad-btn btn-b" onclick="submitAnswer('B')" id="btnB">
+                <span class="btn-letter">B</span>
+            </button>
+            <button class="pad-btn btn-c" onclick="submitAnswer('C')" id="btnC">
+                <span class="btn-letter">C</span>
+            </button>
+            <button class="pad-btn btn-d" onclick="submitAnswer('D')" id="btnD">
+                <span class="btn-letter">D</span>
+            </button>
+        </div>
+
+        <div class="lifelines-section">
+            <button class="lifeline-btn" onclick="useLifeline('50/50')" id="ll5050">
+                <span>50:50</span>
+            </button>
+            <button class="lifeline-btn" onclick="useLifeline('Double Points')" id="llDouble">
+                <span>2X POINTS</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/player/pad.js"></script>
+</body>
+</html>
