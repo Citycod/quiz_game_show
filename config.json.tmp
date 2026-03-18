@@ -1,0 +1,12 @@
+{
+    "rounds": [
+        { "name": "Round 1", "pointsPerQuestion": 10, "penalty": 0, "questionDuration": 10 }
+    ],
+    "speedBonus": { "enabled": true, "thresholdSeconds": 5, "maxBonus": 5 },
+    "streakMultipliers": {
+        "level1": { "streak": 3, "multiplier": 1.5 },
+        "level2": { "streak": 5, "multiplier": 2.0 }
+    },
+    "lifelines": { "enabled": true, "types": ["50/50", "Double Points"] },
+    "dramaticReveal": { "enabled": true }
+}
