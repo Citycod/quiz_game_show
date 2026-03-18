@@ -36,6 +36,7 @@ class GameEngine {
 
         this.config = config;
         this.responseLogs = [];
+        this.currentCorrectAnswer = null; // Private: not in gameState
     }
 
     // Set player name
@@ -77,8 +78,9 @@ class GameEngine {
     }
 
     // Load a new question
-    loadQuestion(questionData) {
+    loadQuestion(questionData, correctAnswer) {
         this.gameState.currentQuestion = questionData;
+        this.currentCorrectAnswer = correctAnswer || questionData.correctAnswer;
         this.gameState.questionStartTime = Date.now();
         this.gameState.players[1].answer = null;
         this.gameState.players[1].answerLocked = false;
@@ -148,10 +150,16 @@ class GameEngine {
 
         // Handle 50/50 - eliminate all wrong answers except one (leaving 1 right + 1 wrong)
         if (lifelineType === '50/50' && this.gameState.currentQuestion) {
-            const correctAnswer = this.gameState.currentQuestion.correctAnswer;
+            const correctAnswer = this.currentCorrectAnswer;
             const options = ['A', 'B', 'C', 'D'];
-            const wrongOptions = options.filter(opt => opt !== correctAnswer);
+            
+            if (!correctAnswer) {
+                console.error('❌ Cannot run 50/50: currentCorrectAnswer is missing!');
+                return { success: false, message: 'Lifeline sync error' };
+            }
 
+            const wrongOptions = options.filter(opt => opt !== correctAnswer);
+            
             // Keep one random wrong option, eliminate the rest
             const keepIndex = Math.floor(Math.random() * wrongOptions.length);
             const toEliminate = wrongOptions.filter((_, i) => i !== keepIndex);

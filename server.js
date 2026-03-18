@@ -77,7 +77,8 @@ function autoAdvanceNextQuestion() {
     const question = questionManager.getNextQuestion(currentRound);
     
     if (question) {
-        gameEngine.loadQuestion(question);
+        const correctAnswer = questionManager.getCorrectAnswer(question.id);
+        gameEngine.loadQuestion(question, correctAnswer);
         io.emit('new-question', question);
 
         // Use runtime duration or round config
@@ -92,7 +93,8 @@ function autoAdvanceNextQuestion() {
             questionManager.reset(5); // Reset sudden death round (round 5)
             const sdQuestion = questionManager.getNextQuestion(5);
             if (sdQuestion) {
-                gameEngine.loadQuestion(sdQuestion);
+                const sdCorrectAnswer = questionManager.getCorrectAnswer(sdQuestion.id);
+                gameEngine.loadQuestion(sdQuestion, sdCorrectAnswer);
                 io.emit('new-question', sdQuestion);
                 io.emit('timer-start', { duration: config.suddenDeath.questionDuration });
             }
@@ -172,7 +174,8 @@ io.on('connection', (socket) => {
             questionManager.reset(roundNumber);
             const question = questionManager.getNextQuestion(roundNumber);
             if (question) {
-                gameEngine.loadQuestion(question);
+                const correctAnswer = questionManager.getCorrectAnswer(question.id);
+                gameEngine.loadQuestion(question, correctAnswer);
                 io.emit('new-question', question);
                 io.emit('timer-start', { duration: runtimeSettings.questionDuration });
             }
