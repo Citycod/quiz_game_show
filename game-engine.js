@@ -188,6 +188,7 @@ class GameEngine {
             const playerResult = results[`player${playerId}`];
 
             playerResult.correct = isCorrect;
+            playerResult.lifelineActive = player.lifelineActive;
 
             if (isCorrect) {
                 // Increase streak

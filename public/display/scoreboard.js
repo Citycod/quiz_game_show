@@ -38,6 +38,22 @@ socket.on('sudden-death-start', () => {
     suddenDeathBanner.classList.add('active');
 });
 
+socket.on('lifeline-used', (data) => {
+    const { playerId, lifelineType } = data;
+    const lifelineIcon = document.getElementById(`lifeline${playerId}`);
+    const lifelineName = document.getElementById(`lifelineName${playerId}`);
+    
+    if (lifelineIcon && lifelineName) {
+        lifelineIcon.classList.add('used');
+        lifelineName.textContent = lifelineType.toUpperCase();
+        
+        // Show activation effect
+        lifelineIcon.style.animation = 'none';
+        void lifelineIcon.offsetWidth;
+        lifelineIcon.style.animation = 'pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    }
+});
+
 socket.on('game-reset', () => {
     suddenDeathBanner.classList.remove('active');
     score1.textContent = '0';
@@ -58,6 +74,14 @@ socket.on('reveal-player-answers', (data) => {
     }
     if (player2.speedBonus && player2.speedBonus > 0) {
         showSpeedBonus(2, player2.speedBonus);
+    }
+
+    // Check for Double Points lifeline
+    if (player1.lifelineActive === 'Double Points' && player1.correct) {
+        showDoublePoints(1);
+    }
+    if (player2.lifelineActive === 'Double Points' && player2.correct) {
+        showDoublePoints(2);
     }
     
     // Show combos if streaks are big
@@ -118,6 +142,22 @@ function showSpeedBonus(playerId, bonusAmount) {
     
     setTimeout(() => {
         bonusEl.remove();
+    }, 2000);
+}
+
+function showDoublePoints(playerId) {
+    const playerSection = document.querySelector(`.player-${playerId}`);
+    const badgeEl = document.createElement('div');
+    badgeEl.className = 'double-points-badge';
+    badgeEl.textContent = `2X POINTS!`;
+    playerSection.appendChild(badgeEl);
+    
+    // Force reflow
+    void badgeEl.offsetWidth;
+    badgeEl.classList.add('animate');
+    
+    setTimeout(() => {
+        badgeEl.remove();
     }, 2000);
 }
 
