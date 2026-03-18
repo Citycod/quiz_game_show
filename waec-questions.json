@@ -1,0 +1,673 @@
+[
+    {
+        "question": "Which of the following processes in living organisms is responsible for the removal of toxic metabolic waste products?",
+        "options": {
+            "A": "Digestion",
+            "B": "Excretion",
+            "C": "Defecation",
+            "D": "Respiration"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "The kinetic theory of matter states that the average kinetic energy of the particles of a gas is directly proportional to its:",
+        "options": {
+            "A": "Absolute temperature",
+            "B": "Pressure",
+            "C": "Volume",
+            "D": "Density"
+        },
+        "correctAnswer": "A",
+        "round": 1
+    },
+    {
+        "question": "In the electrolysis of brine, which of the following substances is produced at the anode?",
+        "options": {
+            "A": "Hydrogen",
+            "B": "Sodium hydroxide",
+            "C": "Chlorine",
+            "D": "Oxygen"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "Which of the following is a characteristic of a perfectly elastic collision between two bodies?",
+        "options": {
+            "A": "Total kinetic energy is not conserved",
+            "B": "Total momentum is not conserved",
+            "0": "Total kinetic energy and total momentum are conserved",
+            "D": "Only total momentum is conserved"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "The phenotypic ratio of the F2 generation in a monohybrid cross, according to Mendel's law of segregation, is:",
+        "options": {
+            "A": "1:2:1",
+            "B": "3:1",
+            "C": "9:3:3:1",
+            "D": "1:1"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "A transformer has 500 turns in the primary coil and 2500 turns in the secondary coil. If the primary voltage is 240V, what is the secondary voltage?",
+        "options": {
+            "A": "48V",
+            "B": "120V",
+            "C": "1200V",
+            "D": "600V"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "The oxidation number of Manganese (Mn) in KMnO4 is:",
+        "options": {
+            "A": "+4",
+            "B": "+6",
+            "C": "+7",
+            "D": "+2"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "Which of the following organelles in a plant cell contains the green pigment chlorophyll and is the site for photosynthesis?",
+        "options": {
+            "A": "Mitochondrion",
+            "B": "Chloroplast",
+            "C": "Nucleus",
+            "D": "Vacuole"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "According to Le Chatelier's principle, if the pressure of a gaseous system at equilibrium is increased, the equilibrium will shift in a direction that:",
+        "options": {
+            "A": "Increases the number of moles of gas",
+            "B": "Decreases the number of moles of gas",
+            "C": "Increases the temperature of the system",
+            "D": "Decreases the volume of the container"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "The half-life of a radioactive isotope is 10 days. What fraction of the original sample will remain after 30 days?",
+        "options": {
+            "A": "1/2",
+            "B": "1/4",
+            "C": "1/8",
+            "D": "1/16"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "An object is placed 15cm in front of a concave mirror of focal length 10cm. The nature of the image formed is:",
+        "options": {
+            "A": "Virtual, erect and magnified",
+            "B": "Real, inverted and magnified",
+            "C": "Real, inverted and diminished",
+            "D": "Virtual, erect and diminished"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "Which of the following organic compounds will undergo an addition reaction with bromine water?",
+        "options": {
+            "A": "Methane",
+            "B": "Ethane",
+            "C": "Ethene",
+            "D": "Benzene"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "In the human circulatory system, the vessel that carries oxygenated blood from the lungs to the left atrium of the heart is the:",
+        "options": {
+            "A": "Pulmonary artery",
+            "B": "Pulmonary vein",
+            "C": "Aorta",
+            "D": "Vena cava"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "The pH of a solution with a hydrogen ion concentration [H+] of 0.001 mol/dm³ is:",
+        "options": {
+            "A": "1",
+            "B": "2",
+            "C": "3",
+            "D": "11"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "Which of the following laws states that the extension of an elastic material is directly proportional to the applied force, provided the elastic limit is not exceeded?",
+        "options": {
+            "A": "Newton's first law",
+            "B": "Ohm's law",
+            "C": "Hooke's law",
+            "D": "Boyles's law"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "The primary cause of global warming is the increase in the atmospheric concentration of:",
+        "options": {
+            "A": "Oxygen",
+            "B": "Nitrogen",
+            "C": "Carbon dioxide",
+            "D": "Argon"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "In a simple pendulum, the period of oscillation is independent of the:",
+        "options": {
+            "A": "Length of the string",
+            "B": "Acceleration due to gravity",
+            "C": "Mass of the bob",
+            "D": "Amplitude of oscillation (for small angles)"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "Which of the following types of chemical bonding involves the complete transfer of electrons from one atom to another?",
+        "options": {
+            "A": "Covalent bonding",
+            "B": "Ionic bonding",
+            "C": "Metallic bonding",
+            "D": "Hydrogen bonding"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "The structural and functional unit of the human nervous system is the:",
+        "options": {
+            "A": "Nephron",
+            "B": "Neuron",
+            "C": "Axon",
+            "D": "Dendrite"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "A force of 10N acts on a body of mass 2kg for 5 seconds. What is the change in momentum of the body?",
+        "options": {
+            "A": "20 kg m/s",
+            "B": "50 kg m/s",
+            "C": "10 kg m/s",
+            "D": "25 kg m/s"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "Which of the following statements about an endothermic reaction is correct?",
+        "options": {
+            "A": "Heat is evolved to the surroundings",
+            "B": "The enthalpy of the products is less than the enthalpy of the reactants",
+            "C": "Heat is absorbed from the surroundings",
+            "D": "The reaction occurs spontaneously at all temperatures"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "The process by which an organism maintains a constant internal environment despite changes in the external surroundings is called:",
+        "options": {
+            "A": "Osmoregulation",
+            "B": "Homeostasis",
+            "C": "Excretion",
+            "D": "Metabolism"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "Which of the following waves requires a material medium for its propagation?",
+        "options": {
+            "A": "Radio waves",
+            "B": "Light waves",
+            "C": "Sound waves",
+            "D": "X-rays"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "The functional group present in alkanols is the:",
+        "options": {
+            "A": "Hydroxyl group (-OH)",
+            "B": "Carboxyl group (-COOH)",
+            "C": "Carbonyl group (>C=O)",
+            "D": "Amino group (-NH2)"
+        },
+        "correctAnswer": "A",
+        "round": 3
+    },
+    {
+        "question": "In a nuclear reactor, the purpose of the moderator is to:",
+        "options": {
+            "A": "Absorb excess neutrons",
+            "B": "Slow down fast-moving neutrons",
+            "C": "Cool the reactor core",
+            "D": "Reflect neutrons back into the core"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "Which of the following is an example of a vestigial organ in humans?",
+        "options": {
+            "A": "Heart",
+            "B": "Lungs",
+            "C": "Appendix",
+            "D": "Liver"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "The boiling point of water is 100°C. What is this temperature in the Kelvin scale?",
+        "options": {
+            "A": "273 K",
+            "B": "373 K",
+            "C": "100 K",
+            "D": "0 K"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "Which of the following salts is insoluble in water?",
+        "options": {
+            "A": "Sodium chloride",
+            "B": "Silver nitrate",
+            "C": "Barium sulphate",
+            "D": "Potassium carbonate"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "The hormone responsible for the regulation of glucose level in the human blood is:",
+        "options": {
+            "A": "Adrenaline",
+            "B": "Thyroxine",
+            "C": "Insulin",
+            "D": "Estrogen"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "Which of the following is a scalar quantity?",
+        "options": {
+            "A": "Velocity",
+            "B": "Momentum",
+            "C": "Temperature",
+            "D": "Acceleration"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "A particle of mass 0.5 kg is moving with a velocity of 10 m/s. Calculate its kinetic energy.",
+        "options": {
+            "A": "5 J",
+            "B": "25 J",
+            "C": "50 J",
+            "D": "100 J"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "Which of the following rays has the highest ionizing power?",
+        "options": {
+            "A": "Alpha rays",
+            "B": "Beta rays",
+            "C": "Gamma rays",
+            "D": "X-rays"
+        },
+        "correctAnswer": "A",
+        "round": 1
+    },
+    {
+        "question": "The functional group present in ethanoic acid is:",
+        "options": {
+            "A": "Hydroxyl group (-OH)",
+            "B": "Carboxyl group (-COOH)",
+            "C": "Carbonyl group (>C=O)",
+            "D": "Alkanoate group (-COO-)"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "Which of the following vitamins is water-soluble?",
+        "options": {
+            "A": "Vitamin A",
+            "B": "Vitamin K",
+            "C": "Vitamin C",
+            "D": "Vitamin D"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "A car starts from rest and accelerates uniformly at 2 m/s². What is its velocity after 10 seconds?",
+        "options": {
+            "A": "5 m/s",
+            "B": "10 m/s",
+            "C": "20 m/s",
+            "D": "40 m/s"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "The cracking of petroleum is important because it:",
+        "options": {
+            "A": "Increases the yield of diesel",
+            "B": "Produces more aviation fuel",
+            "C": "Increases the yield of gasoline",
+            "D": "Produces lubricating oils"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "Which of the following structures in the kidney is responsible for the ultrafiltration of blood?",
+        "options": {
+            "A": "Loop of Henle",
+            "B": "Distal convoluted tubule",
+            "C": "Bowman's capsule",
+            "D": "Collecting duct"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "Calculate the resistance of a wire if a potential difference of 10V causes a current of 2A to flow through it.",
+        "options": {
+            "A": "20 ohms",
+            "B": "5 ohms",
+            "C": "12 ohms",
+            "D": "0.2 ohms"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "Which of the following is an example of an addition polymer?",
+        "options": {
+            "A": "Nylon",
+            "B": "Terylene",
+            "C": "Polyethene",
+            "D": "Starch"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "The sequence of nitrogenous bases in a DNA molecule determines the organism's:",
+        "options": {
+            "A": "RNA type",
+            "B": "Protein structure",
+            "C": "Lipid content",
+            "D": "Carbohydrate store"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "A convex lens has a focal length of 20cm. Its power in dioptres is:",
+        "options": {
+            "A": "0.05 D",
+            "B": "5.0 D",
+            "C": "20 D",
+            "D": "10 D"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "Which of the following gases is used as a refrigerant?",
+        "options": {
+            "A": "Ammonia",
+            "B": "Nitrogen",
+            "C": "Oxygen",
+            "D": "Helium"
+        },
+        "correctAnswer": "A",
+        "round": 2
+    },
+    {
+        "question": "In humans, the sex of a child is determined by the chromosomes from the:",
+        "options": {
+            "A": "Mother",
+            "B": "Father",
+            "C": "Both parents",
+            "D": "Grandparents"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "The unit of electric charge is the:",
+        "options": {
+            "A": "Ampere",
+            "B": "Volt",
+            "C": "Coulomb",
+            "D": "Ohm"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "A salt formed from a strong acid and a weak base will have a pH:",
+        "options": {
+            "A": "Greater than 7",
+            "B": "Less than 7",
+            "C": "Equal to 7",
+            "D": "Equal to zero"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "The process by which plants lose water to the atmosphere through their leaves is:",
+        "options": {
+            "A": "Guttation",
+            "B": "Transpiration",
+            "C": "Evaporation",
+            "D": "Osmosis"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "The escape velocity of an object from the Earth's surface depends on the:",
+        "options": {
+            "A": "Mass of the object",
+            "B": "Radius of the object",
+            "C": "Mass of the Earth",
+            "D": "Atmospheric pressure"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "Which of the following is an electrolyte?",
+        "options": {
+            "A": "Sugar solution",
+            "B": "Ethanol",
+            "C": "Table salt (molten)",
+            "D": "Kerosene"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "The part of the flower that develops into a seed after fertilization is the:",
+        "options": {
+            "A": "Stigma",
+            "B": "Ovary",
+            "C": "Ovule",
+            "D": "Anther"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "Which of the following instruments is used to measure the relative humidity of the atmosphere?",
+        "options": {
+            "A": "Hygrometer",
+            "B": "Anemometer",
+            "C": "Barometer",
+            "D": "Thermometer"
+        },
+        "correctAnswer": "A",
+        "round": 2
+    },
+    {
+        "question": "The general formula for the homologous series of alkanes is:",
+        "options": {
+            "A": "CnH2n",
+            "B": "CnH2n+1",
+            "C": "CnH2n+2",
+            "D": "CnH2n-2"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "The site of aerobic respiration in the cell is the:",
+        "options": {
+            "A": "Ribosome",
+            "B": "Mitochondrion",
+            "C": "Nucleus",
+            "D": "Cytoplasm"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "According to Newton's Second Law of Motion, the rate of change of momentum is equal to the:",
+        "options": {
+            "A": "Impulse",
+            "B": "Applied force",
+            "C": "Velocity",
+            "D": "Acceleration"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "Which of the following is a physical change?",
+        "options": {
+            "A": "Burning a piece of wood",
+            "B": "Rusting of iron",
+            "C": "Melting of ice",
+            "D": "Souring of milk"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "The hormone that regulates the rate of metabolism in the body is:",
+        "options": {
+            "A": "Adrenaline",
+            "B": "Insulin",
+            "C": "Thyroxine",
+            "D": "Growth hormone"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "A sound wave travels with a speed of 340 m/s. If its frequency is 170 Hz, what is its wavelength?",
+        "options": {
+            "A": "0.5 m",
+            "B": "2.0 m",
+            "C": "1.0 m",
+            "D": "57800 m"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "Which of the following organic compounds is used in the manufacture of soap?",
+        "options": {
+            "A": "Ethyl acetate",
+            "B": "Fatty acids",
+            "C": "Glucose",
+            "D": "Benzene"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "The structural unit of inheritance which is located on the genes is:",
+        "options": {
+            "A": "DNA",
+            "B": "RNA",
+            "C": "Chromosome",
+            "D": "Nucleus"
+        },
+        "correctAnswer": "A",
+        "round": 3
+    },
+    {
+        "question": "The distance between two successive crests of a transverse wave is called its:",
+        "options": {
+            "A": "Speed",
+            "B": "Amplitude",
+            "C": "Wavelength",
+            "D": "Period"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "Which of the following is a property of alpha particles?",
+        "options": {
+            "A": "They are negatively charged",
+            "B": "They are highly penetrating",
+            "C": "They are helium nuclei",
+            "D": "They travel at the speed of light"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "The basic structural and functional unit of life is the:",
+        "options": {
+            "A": "Tissue",
+            "B": "Organ",
+            "C": "Cell",
+            "D": "System"
+        },
+        "correctAnswer": "C",
+        "round": 4
+    }
+]

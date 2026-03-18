@@ -45,6 +45,12 @@
                 <span class="option-text" id="optionD">Option D</span>
             </div>
         </div>
+        
+        <!-- AI Explanation Box -->
+        <div class="explanation-box" id="explanationBox">
+            <div class="explanation-icon">💡</div>
+            <div class="explanation-text" id="explanationText"></div>
+        </div>
 
         <!-- Timer Bar -->
         <div class="timer-container">
@@ -82,8 +88,19 @@
             <div class="combo-text">COMBO!</div>
             <div class="streak-multiplier" id="streakMultiplier">2x MULTIPLIER</div>
         </div>
+
+        <!-- Trophy Container (Game Over) -->
+        <div class="trophy-container" id="trophyContainer">
+            <div class="trophy-icon">🏆</div>
+        </div>
+
+        <!-- Screen Recorder Overlays -->
+        <div class="recording-indicator" id="recordingIndicator">🔴 REC</div>
+        <div class="recording-hint">Press Shift+R to Start/Stop Recording</div>
     </div>
 
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/shared/audio-engine.js"></script>
     <script src="question.js"></script>

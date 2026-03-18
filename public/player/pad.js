@@ -8,7 +8,19 @@ document.getElementById('playerName').textContent = `PLAYER ${playerId}`;
 // Identify as player
 socket.emit('identify', { type: 'player', playerId });
 
+const audio = new AudioEngine();
+document.addEventListener('touchstart', () => { audio.init(); audio.resume(); }, { once: true });
+document.addEventListener('mousedown', () => { audio.init(); audio.resume(); }, { once: true });
+
+function triggerHaptic() {
+    audio.playHaptic();
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+}
+
 // DOM Elements
+const nameEntryScreen = document.getElementById('nameEntryScreen');
 const waitingScreen = document.getElementById('waitingScreen');
 const answerFeedback = document.getElementById('answerFeedback');
 const roundText = document.getElementById('roundText');
@@ -23,6 +35,28 @@ const buttons = {
 
 let gameActive = false;
 let lifelinesUsed = [];
+let hasJoined = false;
+
+// Join game with name
+function joinGame() {
+    const nameInput = document.getElementById('playerNameInput');
+    const name = nameInput.value.trim();
+    if (!name) {
+        nameInput.style.border = '2px solid #ef4444';
+        nameInput.placeholder = 'Please enter your name!';
+        return;
+    }
+    socket.emit('join-game', { playerId, name });
+    document.getElementById('playerName').textContent = name.toUpperCase();
+    hasJoined = true;
+    nameEntryScreen.classList.remove('active');
+    waitingScreen.classList.add('active');
+}
+
+// Allow Enter key to submit name
+document.getElementById('playerNameInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') joinGame();
+});
 
 // Game State Sync
 socket.on('game-state', (state) => {
@@ -66,6 +100,8 @@ function updateUI(state) {
     const player = state.players[playerId];
     scoreText.textContent = `SCORE: ${player.score}`;
     
+    if (!hasJoined) return; // Don't change screens until player has entered name
+
     if (state.gameStatus === 'waiting' || state.gameStatus === 'paused') {
         waitingScreen.classList.add('active');
     } else {
@@ -80,11 +116,13 @@ function updateUI(state) {
 function submitAnswer(answer) {
     if (!gameActive) return;
 
+    triggerHaptic();
     socket.emit('submit-answer', { playerId, answer });
     showFeedback();
 }
 
 function useLifeline(type) {
+    triggerHaptic();
     socket.emit('activate-lifeline', { playerId, lifelineType: type });
 }
 
@@ -103,8 +141,23 @@ function resetButtons() {
     });
 }
 
+socket.on('reveal-player-answers', (data) => {
+    const player = data[`player${playerId}`];
+    if (player.correct) {
+        audio.playCorrect();
+    } else {
+        audio.playWrong();
+    }
+});
+
 socket.on('game-over', (data) => {
     waitingScreen.classList.add('active');
     document.querySelector('#waitingScreen p').textContent = 
         data.winner === playerId ? "🏆 YOU WON!" : "💀 GAME OVER";
+    
+    if (data.winner === playerId) {
+        audio.playCombo();
+    } else {
+        audio.playWrong();
+    }
 });

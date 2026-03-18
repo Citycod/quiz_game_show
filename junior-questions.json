@@ -1,0 +1,673 @@
+[
+    {
+        "question": "Which of the following is a non-living component of an ecosystem?",
+        "options": {
+            "A": "Producers",
+            "B": "Decomposers",
+            "C": "Sunlight",
+            "D": "Consumers"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "The process by which a solid changes directly into a gas without passing through the liquid state is called:",
+        "options": {
+            "A": "Evaporation",
+            "B": "Sublimation",
+            "C": "Condensation",
+            "D": "Melting"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "Which of the following is a primary source of energy in the Lagos State curriculum?",
+        "options": {
+            "A": "The Moon",
+            "B": "The Sun",
+            "C": "The Stars",
+            "D": "The Earth"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "In mathematics, what is the value of 'x' in the equation 2x + 5 = 15?",
+        "options": {
+            "A": "5",
+            "B": "10",
+            "C": "7",
+            "D": "20"
+        },
+        "correctAnswer": "A",
+        "round": 1
+    },
+    {
+        "question": "Which part of the computer is responsible for processing data?",
+        "options": {
+            "A": "Monitor",
+            "B": "Keyboard",
+            "C": "Central Processing Unit (CPU)",
+            "D": "Mouse"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "An example of a renewable energy source is:",
+        "options": {
+            "A": "Coal",
+            "B": "Petroleum",
+            "C": "Solar energy",
+            "D": "Natural gas"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "Which of these is a respiratory organ in humans?",
+        "options": {
+            "A": "Heart",
+            "B": "Lungs",
+            "C": "Stomach",
+            "D": "Liver"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "The boiling point of pure water at standard atmospheric pressure is:",
+        "options": {
+            "A": "0°C",
+            "B": "50°C",
+            "C": "100°C",
+            "D": "212°C"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "In English Language, what is the plural of 'Child'?",
+        "options": {
+            "A": "Childs",
+            "B": "Children",
+            "C": "Childrens",
+            "D": "Childes"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "Which of the following is an example of a simple machine?",
+        "options": {
+            "A": "Computer",
+            "B": "Lever",
+            "C": "Television",
+            "D": "Refrigerator"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "The smallest unit of an element that can exist and still retain the properties of that element is the:",
+        "options": {
+            "A": "Molecule",
+            "B": "Atom",
+            "C": "Compound",
+            "D": "Mixture"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "What is the result of 15% of 200?",
+        "options": {
+            "A": "15",
+            "B": "20",
+            "C": "30",
+            "D": "45"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "Which of these is a function of the leaf in plants?",
+        "options": {
+            "A": "Absorption of water",
+            "B": "Photosynthesis",
+            "C": "Anchoring the plant",
+            "D": "Transporting minerals"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "In Civic Education, the Nigerian national flag has two colors. They are:",
+        "options": {
+            "A": "Green and White",
+            "B": "Green and Yellow",
+            "C": "Red and White",
+            "D": "Blue and White"
+        },
+        "correctAnswer": "A",
+        "round": 1
+    },
+    {
+        "question": "Which of the following is a sense organ?",
+        "options": {
+            "A": "Bone",
+            "B": "Skin",
+            "C": "Muscle",
+            "D": "Hair"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "The main gas used in respiration by animals is:",
+        "options": {
+            "A": "Carbon dioxide",
+            "B": "Oxygen",
+            "C": "Nitrogen",
+            "D": "Hydrogen"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "If a triangle has a base of 10cm and a height of 8cm, its area is:",
+        "options": {
+            "A": "80 square cm",
+            "B": "40 square cm",
+            "C": "18 square cm",
+            "D": "50 square cm"
+        },
+        "correctAnswer": "B",
+        "round": 1
+    },
+    {
+        "question": "Which of the following is a biotic factor in the environment?",
+        "options": {
+            "A": "Temperature",
+            "B": "Rainfall",
+            "C": "Plants",
+            "D": "Soil"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "The chemical symbol for water is:",
+        "options": {
+            "A": "H2O",
+            "B": "CO2",
+            "C": "O2",
+            "D": "NaCl"
+        },
+        "correctAnswer": "A",
+        "round": 1
+    },
+    {
+        "question": "The three tiers of government in Nigeria include Federal, State, and:",
+        "options": {
+            "A": "Village",
+            "B": "Traditional",
+            "C": "Local",
+            "D": "Judiciary"
+        },
+        "correctAnswer": "C",
+        "round": 1
+    },
+    {
+        "question": "Which of these is a source of irrigation in Nigeria?",
+        "options": {
+            "A": "Underground water",
+            "B": "Dams",
+            "C": "Rainfall",
+            "D": "Mist"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "In Basic Technology, the property of a material to be drawn into thin wires is:",
+        "options": {
+            "A": "Malleability",
+            "B": "Ductility",
+            "C": "Hardness",
+            "D": "Elasticity"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "What is the H.C.F of 24 and 36?",
+        "options": {
+            "A": "6",
+            "B": "8",
+            "C": "12",
+            "D": "18"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "Which component of the blood helps in fighting germs?",
+        "options": {
+            "A": "Red blood cells",
+            "B": "White blood cells",
+            "C": "Plasma",
+            "D": "Platelets"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "Which of these is a major river in Nigeria?",
+        "options": {
+            "A": "Nile",
+            "B": "Niger",
+            "C": "Zambezi",
+            "D": "Congo"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "The process of maintaining a healthy body through diet and exercise is:",
+        "options": {
+            "A": "Pollution",
+            "B": "Hygiene",
+            "C": "Germination",
+            "D": "Erosion"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "What is the square root of 225?",
+        "options": {
+            "A": "15",
+            "B": "25",
+            "C": "12",
+            "D": "20"
+        },
+        "correctAnswer": "A",
+        "round": 2
+    },
+    {
+        "question": "An example of an input device of a computer is:",
+        "options": {
+            "A": "Printer",
+            "B": "Speaker",
+            "C": "Keyboard",
+            "D": "Monitor"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "Which of these elements is a liquid at room temperature?",
+        "options": {
+            "A": "Iron",
+            "B": "Mercury",
+            "C": "Gold",
+            "D": "Silver"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "In English, identify the adjective in: 'The beautiful girl sang a song.'",
+        "options": {
+            "A": "sang",
+            "B": "girl",
+            "C": "beautiful",
+            "D": "song"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "What is 2 raised to the power of 5?",
+        "options": {
+            "A": "10",
+            "B": "32",
+            "C": "16",
+            "D": "64"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "Which of these is a form of local trade in Nigeria?",
+        "options": {
+            "A": "Exporting oil",
+            "B": "Buying from the local market",
+            "C": "Importing electronics",
+            "D": "International shipping"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "The part of the eye that controls the amount of light entering is the:",
+        "options": {
+            "A": "Cornea",
+            "B": "Iris",
+            "C": "Retina",
+            "D": "Lens"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "Calculate the simple interest on N5000 for 2 years at 5% rate.",
+        "options": {
+            "A": "N500",
+            "B": "N250",
+            "C": "N1000",
+            "D": "N50"
+        },
+        "correctAnswer": "A",
+        "round": 2
+    },
+    {
+        "question": "Which of the following is a symptom of malaria?",
+        "options": {
+            "A": "Cough",
+            "B": "Fever",
+            "C": "Skin rash",
+            "D": "Sore throat"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "A rectangle has a length of 12 cm and a breadth of 5 cm. Its perimeter is:",
+        "options": {
+            "A": "60 cm",
+            "B": "34 cm",
+            "C": "17 cm",
+            "D": "24 cm"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "Identify the conjunction in this sentence: 'I like yam but my sister likes rice.'",
+        "options": {
+            "A": "like",
+            "B": "but",
+            "C": "my",
+            "D": "rice"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "The set of computer programs that manage the computer hardware is:",
+        "options": {
+            "A": "RAM",
+            "B": "ROM",
+            "C": "Operating System",
+            "D": "CPU"
+        },
+        "correctAnswer": "C",
+        "round": 2
+    },
+    {
+        "question": "Which of these is a traditional farming tool?",
+        "options": {
+            "A": "Tractor",
+            "B": "Hoe",
+            "C": "Combine harvester",
+            "D": "Sprayer"
+        },
+        "correctAnswer": "B",
+        "round": 2
+    },
+    {
+        "question": "A disease that can be passed from one person to another is called:",
+        "options": {
+            "A": "Congenital",
+            "B": "Deficiency",
+            "C": "Communicable",
+            "D": "Genetic"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "Find the average of 10, 20, 30, and 40.",
+        "options": {
+            "A": "20",
+            "B": "25",
+            "C": "15",
+            "D": "30"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "In English, what is the synonym of 'Happy'?",
+        "options": {
+            "A": "Sad",
+            "B": "Angry",
+            "C": "Joyful",
+            "D": "Tired"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "The SI unit of force is:",
+        "options": {
+            "A": "Joule",
+            "B": "Watt",
+            "C": "Newton",
+            "D": "Pascal"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "What is the capital of Lagos State?",
+        "options": {
+            "A": "Lagos Island",
+            "B": "Ikeja",
+            "C": "Badagry",
+            "D": "Ikorodu"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "A circle has a diameter of 14 cm. What is its radius?",
+        "options": {
+            "A": "28 cm",
+            "B": "7 cm",
+            "C": "14 cm",
+            "D": "21 cm"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "Which of these is NOT a source of water pollution?",
+        "options": {
+            "A": "Oil spill",
+            "B": "Industrial waste",
+            "C": "Planting trees",
+            "D": "Sewage"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "The first indigenous Christian mission in Nigeria was founded in:",
+        "options": {
+            "A": "Abuja",
+            "B": "Abeokuta",
+            "C": "Badagry",
+            "D": "Enugu"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "The study of the relationship between organisms and their environment is:",
+        "options": {
+            "A": "Biology",
+            "B": "Physics",
+            "C": "Ecology",
+            "D": "Chemistry"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "In mathematics, 1/2 + 1/4 equals:",
+        "options": {
+            "A": "1/6",
+            "B": "3/4",
+            "C": "2/6",
+            "D": "2/4"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "Which of these is a social problem in Nigeria?",
+        "options": {
+            "A": "Abundance of food",
+            "B": "Drug abuse",
+            "C": "Good roads",
+            "D": "Free education"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "Which organ in the human body is responsible for pumping blood?",
+        "options": {
+            "A": "Brain",
+            "B": "Heart",
+            "C": "Lungs",
+            "D": "Kidney"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "What is the product of 12 and 11?",
+        "options": {
+            "A": "132",
+            "B": "121",
+            "C": "122",
+            "D": "144"
+        },
+        "correctAnswer": "A",
+        "round": 3
+    },
+    {
+        "question": "Which of these is a primary method of waste disposal?",
+        "options": {
+            "A": "Throwing it on the road",
+            "B": "Recycling",
+            "C": "Burning openly anywhere",
+            "D": "Dumping in rivers"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "Identify the verb in: 'Samuel ran to the school.'",
+        "options": {
+            "A": "Samuel",
+            "B": "ran",
+            "C": "school",
+            "D": "the"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "The freezing point of pure water is:",
+        "options": {
+            "A": "100°C",
+            "B": "0°C",
+            "C": "32°C",
+            "D": "-10°C"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "Calculate the volume of a box with length 5cm, width 4cm, and height 3cm.",
+        "options": {
+            "A": "12 square cm",
+            "B": "60 cubic cm",
+            "C": "20 cubic cm",
+            "D": "15 square cm"
+        },
+        "correctAnswer": "B",
+        "round": 3
+    },
+    {
+        "question": "The Nigerian Coat of Arms has two horses representing:",
+        "options": {
+            "A": "Dignity",
+            "B": "Unity",
+            "C": "Peace",
+            "D": "Strength"
+        },
+        "correctAnswer": "A",
+        "round": 3
+    },
+    {
+        "question": "The use of science and engineering to solve problems is called:",
+        "options": {
+            "A": "Mathematics",
+            "B": "Chemistry",
+            "C": "Technology",
+            "D": "History"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "Which of these is an example of an opaque material?",
+        "options": {
+            "A": "Clear glass",
+            "B": "Air",
+            "C": "Wood",
+            "D": "Water"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "The most important nutrient for building and repairing body tissues is:",
+        "options": {
+            "A": "Carbohydrate",
+            "B": "Fats",
+            "C": "Protein",
+            "D": "Vitamin"
+        },
+        "correctAnswer": "C",
+        "round": 3
+    },
+    {
+        "question": "The study of the physical features of the earth and its atmosphere is:",
+        "options": {
+            "A": "History",
+            "B": "Geography",
+            "C": "Economics",
+            "D": "Political Science"
+        },
+        "correctAnswer": "B",
+        "round": 4
+    }
+]

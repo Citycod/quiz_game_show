@@ -45,6 +45,22 @@ socket.on('scores', (scores) => {
 socket.on('scores-update', (scores) => {
     p1Score.textContent = scores.player1.score;
     p2Score.textContent = scores.player2.score;
+    // Update names from scores if available
+    if (scores.player1.name) {
+        document.querySelector('#p1Card h3').textContent = scores.player1.name;
+    }
+    if (scores.player2.name) {
+        document.querySelector('#p2Card h3').textContent = scores.player2.name;
+    }
+});
+
+// Handle player name updates
+socket.on('player-name-update', (data) => {
+    const card = document.getElementById(`p${data.playerId}Card`);
+    if (card) {
+        card.querySelector('h3').textContent = data.name;
+    }
+    addLog(`Player ${data.playerId} joined as: ${data.name}`);
 });
 
 socket.on('player-answered', (data) => {
@@ -61,9 +77,35 @@ socket.on('new-question', (q) => {
 });
 
 socket.on('questions-loaded', (data) => {
-    questionCountText.textContent = `Questions in database: ${data.count}`;
+    questionCountText.textContent = `Total in DB: ${data.count} | Round ${data.round}: ${data.roundCount}`;
     questionsCountVal.textContent = data.count;
-    addLog(`Database updated: ${data.count} questions loaded.`);
+    addLog(`Database updated: Round ${data.round} now has ${data.roundCount} questions.`);
+});
+
+socket.on('grok-key-status', (data) => {
+    if (data.configured) {
+        document.getElementById('grokKeyStatus').style.display = 'block';
+    }
+});
+
+socket.on('ai-generating', (data) => {
+    const statusEl = document.getElementById('aiStatus');
+    const btn = document.getElementById('generateAiBtn');
+    statusEl.style.display = 'block';
+    if (data.status === 'generating') {
+        statusEl.textContent = '⏳ Generating questions with AI... Please wait...';
+        statusEl.style.color = '#f59e0b';
+        btn.disabled = true;
+    } else if (data.status === 'done') {
+        statusEl.textContent = `✅ Successfully generated ${data.count} questions!`;
+        statusEl.style.color = '#10b981';
+        btn.disabled = false;
+        setTimeout(() => statusEl.style.display = 'none', 5000);
+    } else if (data.status === 'error') {
+        statusEl.textContent = `❌ Error: ${data.message}`;
+        statusEl.style.color = '#ef4444';
+        btn.disabled = false;
+    }
 });
 
 socket.on('round-started', (data) => {
@@ -116,6 +158,10 @@ socket.on('settings-sync', (settings) => {
 
     document.getElementById('revealDelaySlider').value = settings.revealDelay;
     document.getElementById('revealDelayValue').textContent = settings.revealDelay + 's';
+
+    if (settings.schoolLevel) {
+        document.getElementById('schoolLevel').value = settings.schoolLevel;
+    }
 });
 
 // Live slider value updates
@@ -157,17 +203,62 @@ function resetGame() {
 
 function loadCSV() {
     const path = document.getElementById('csvPath').value;
-    socket.emit('load-questions-csv', path);
+    const round = parseInt(document.getElementById('targetRound').value);
+    socket.emit('load-questions-csv', { path, round });
+    addLog(`Requesting CSV load for Round ${round}...`);
+}
+
+function loadWAEC() {
+    const round = document.getElementById('targetRound').value;
+    const schoolLevel = document.getElementById('schoolLevel').value;
+    socket.emit('load-waec-questions', { round, schoolLevel });
+    addLog(`Requesting ${schoolLevel.toUpperCase()} database load for Round ${round}...`);
+}
+
+function generateAIQuestions() {
+    const schoolLevel = document.getElementById('schoolLevel').value;
+    const roundVal = document.getElementById('targetRound').value;
+    
+    let count;
+    let round;
+    if (roundVal === 'all') {
+        round = 'all';
+        count = 61;
+    } else {
+        round = parseInt(roundVal);
+        count = parseInt(document.getElementById('aiQuestionCount').value) || 5;
+    }
+
+    socket.emit('generate-ai-questions', { schoolLevel, round, count });
+    addLog(`Requesting ${count} AI questions for ${schoolLevel} (Round ${round})...`);
+}
+
+function setGrokApiKey() {
+    const apiKey = document.getElementById('grokApiKey').value.trim();
+    if (!apiKey) {
+        alert('Please enter an API key');
+        return;
+    }
+    socket.emit('set-grok-api-key', { apiKey });
+    document.getElementById('grokApiKey').value = '';
 }
 
 function saveSettings() {
     const settings = {
         questionDuration: parseInt(document.getElementById('questionDurationSlider').value),
         autoAdvanceDelay: parseInt(document.getElementById('autoAdvanceSlider').value),
-        revealDelay: parseFloat(document.getElementById('revealDelaySlider').value)
+        revealDelay: parseFloat(document.getElementById('revealDelaySlider').value),
+        schoolLevel: document.getElementById('schoolLevel').value
     };
     socket.emit('update-settings', settings);
-    addLog(`Settings updated: Timer=${settings.questionDuration}s, Advance=${settings.autoAdvanceDelay}s, Reveal=${settings.revealDelay}s`);
+    addLog(`Settings updated: Timer=${settings.questionDuration}s, Advance=${settings.autoAdvanceDelay}s, Reveal=${settings.revealDelay}s, Level=${settings.schoolLevel}`);
+
+    // Also trigger save for Grok API key if one is entered
+    const apiKey = document.getElementById('grokApiKey').value.trim();
+    if (apiKey) {
+        socket.emit('set-grok-api-key', { apiKey });
+        document.getElementById('grokApiKey').value = '';
+    }
 }
 
 function getLogs() {

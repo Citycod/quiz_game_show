@@ -291,7 +291,97 @@ class AudioEngine {
         });
     }
 
+    // ─── TENSION / AMBIENCE ─────────────────────────────────
+    playTension() {
+        this.init();
+        this.resume();
+        if (this.tensionOsc) return;
+
+        const now = this.ctx.currentTime;
+        this.tensionGain = this.ctx.createGain();
+        this.tensionGain.gain.value = 0;
+        this.tensionGain.connect(this.masterGain);
+        this.tensionGain.gain.linearRampToValueAtTime(0.05, now + 1);
+
+        // Low pulsing heartbeat
+        this.tensionOsc = this.ctx.createOscillator();
+        this.tensionOsc.type = 'sine';
+        this.tensionOsc.frequency.value = 60; // Low bass
+        
+        const lfo = this.ctx.createOscillator();
+        lfo.frequency.value = 1.5; // Pulse rate
+        const lfoGain = this.ctx.createGain();
+        lfoGain.gain.value = 20;
+        lfo.connect(lfoGain);
+        lfoGain.connect(this.tensionOsc.frequency);
+        
+        this.tensionOsc.connect(this.tensionGain);
+        lfo.start(now);
+        this.tensionOsc.start(now);
+        this.tensionLfo = lfo;
+    }
+
+    stopTension() {
+        if (this.tensionOsc) {
+            const now = this.ctx.currentTime;
+            this.tensionGain.gain.linearRampToValueAtTime(0, now + 1);
+            setTimeout(() => {
+                if (this.tensionOsc) {
+                    this.tensionOsc.stop();
+                    this.tensionLfo.stop();
+                    this.tensionOsc = null;
+                }
+            }, 1000);
+        }
+    }
+
+    // ─── POWER-UP ──────────────────────────────────────────
+    playPowerUp() {
+        this.init();
+        this.resume();
+        const now = this.ctx.currentTime;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(1600, now + 0.4);
+
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 800;
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+        
+        osc.start(now);
+        osc.stop(now + 0.5);
+    }
+
+    // ─── HAPTIC FEEDBACK (BEEP) ─────────────────────────────
+    playHaptic() {
+        this.init();
+        this.resume();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        
+        osc.frequency.value = 800;
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        osc.start(now);
+        osc.stop(now + 0.06);
+    }
+
     stopAll() {
         this.stopBackgroundMusic();
+        this.stopTension();
     }
 }

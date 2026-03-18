@@ -1,9 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 const path = require('path');
 const GameEngine = require('./game-engine');
 const QuestionManager = require('./question-manager');
+const GrokService = require('./grok-service');
 const config = require('./config.json');
 
 const app = express();
@@ -13,13 +15,17 @@ const io = socketIO(server);
 // Initialize game components
 const gameEngine = new GameEngine();
 const questionManager = new QuestionManager();
+const grokService = new GrokService();
 
 // Runtime settings (can be changed by admin during the game)
 const runtimeSettings = {
     questionDuration: config.rounds[0].questionDuration,
     autoAdvanceDelay: 5,
-    revealDelay: config.dramaticReveal.delaySeconds
+    revealDelay: config.dramaticReveal.delaySeconds,
+    schoolLevel: 'junior' // Default
 };
+
+let globalSchoolLevel = 'junior';
 
 // Middleware
 app.use(express.json());
@@ -67,7 +73,9 @@ function broadcastPlayerStatus() {
 
 // Helper: auto-advance to next question
 function autoAdvanceNextQuestion() {
-    const question = questionManager.getNextQuestion();
+    const currentRound = gameEngine.getGameState().currentRound;
+    const question = questionManager.getNextQuestion(currentRound);
+    
     if (question) {
         gameEngine.loadQuestion(question);
         io.emit('new-question', question);
@@ -77,12 +85,12 @@ function autoAdvanceNextQuestion() {
         const duration = runtimeSettings.questionDuration || roundConfig.questionDuration;
         io.emit('timer-start', { duration });
     } else {
-        // No more questions
+        // No more questions for this round
         if (gameEngine.shouldEnterSuddenDeath()) {
             gameEngine.startSuddenDeath();
             io.emit('sudden-death-start');
-            questionManager.reset();
-            const sdQuestion = questionManager.getNextQuestion();
+            questionManager.reset(5); // Reset sudden death round (round 5)
+            const sdQuestion = questionManager.getNextQuestion(5);
             if (sdQuestion) {
                 gameEngine.loadQuestion(sdQuestion);
                 io.emit('new-question', sdQuestion);
@@ -90,7 +98,7 @@ function autoAdvanceNextQuestion() {
             }
         } else {
             io.emit('round-ended', {
-                round: gameEngine.getGameState().currentRound,
+                round: currentRound,
                 scores: gameEngine.getScores()
             });
         }
@@ -138,6 +146,19 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Player: Set their display name before game starts
+    socket.on('join-game', (data) => {
+        const { playerId, name } = data;
+        try {
+            const displayName = gameEngine.setPlayerName(playerId, name);
+            // Broadcast name update to ALL clients
+            io.emit('player-name-update', { playerId, name: displayName });
+            console.log(`🏷️ Player ${playerId} set name to: ${displayName}`);
+        } catch (error) {
+            socket.emit('error', { message: error.message });
+        }
+    });
+
     // Admin: Start round
     socket.on('start-round', (roundNumber) => {
         try {
@@ -147,8 +168,9 @@ io.on('connection', (socket) => {
             io.emit('round-started', { round: roundNumber, config: roundConfig });
             io.emit('settings-sync', runtimeSettings);
 
-            // Load first question
-            const question = questionManager.getNextQuestion();
+            // Load first question for THIS round
+            questionManager.reset(roundNumber);
+            const question = questionManager.getNextQuestion(roundNumber);
             if (question) {
                 gameEngine.loadQuestion(question);
                 io.emit('new-question', question);
@@ -162,14 +184,158 @@ io.on('connection', (socket) => {
     });
 
     // Admin: Load questions from CSV
-    socket.on('load-questions-csv', async (filePath) => {
+    socket.on('load-questions-csv', async (data) => {
         try {
-            await questionManager.loadFromCSV(filePath);
+            const filePath = typeof data === 'string' ? data : data.path;
+            const round = data.round || 1;
+            await questionManager.loadFromCSV(filePath, round);
             io.emit('questions-loaded', {
-                count: questionManager.getTotalQuestions()
+                count: questionManager.getTotalQuestions(),
+                roundCount: questionManager.getRoundQuestionCount(round),
+                round: round
             });
         } catch (error) {
             socket.emit('error', { message: error.message });
+        }
+    });
+
+    // Admin: Load Academic Questions (Legacy event name for compatibility)
+    socket.on('load-waec-questions', (data) => {
+        try {
+            const roundRequest = (data && data.round) ? data.round : '1';
+            const level = (data && data.schoolLevel) ? data.schoolLevel : globalSchoolLevel;
+            const fs = require('fs');
+            
+            // Choose file based on level
+            const fileName = level === 'junior' ? 'junior-questions.json' : 'waec-questions.json';
+            const filePath = path.join(__dirname, fileName);
+            
+            if (!fs.existsSync(filePath)) {
+                throw new Error(`File ${fileName} not found.`);
+            }
+
+            const fileData = fs.readFileSync(filePath, 'utf8');
+            const allQuestions = JSON.parse(fileData);
+            
+            if (roundRequest === 'all') {
+                // Load all 61 questions (Rounds 1-4)
+                questionManager.reset(); // Full reset
+                const rounds = [1, 2, 3, 4];
+                let totalLoaded = 0;
+
+                rounds.forEach(r => {
+                    const filtered = allQuestions.filter(q => q.round === r);
+                    // Shuffle before adding
+                    for (let i = filtered.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+                    }
+                    filtered.forEach(q => questionManager.addQuestion(q, r));
+                    totalLoaded += filtered.length;
+                    
+                    io.emit('questions-loaded', {
+                        count: questionManager.getTotalQuestions(),
+                        roundCount: filtered.length,
+                        round: r,
+                        level: level
+                    });
+                });
+
+                console.log(`📚 Loaded FULL GAME (${totalLoaded} questions) for ${level.toUpperCase()} level.`);
+            } else {
+                const round = parseInt(roundRequest);
+                const filteredQuestions = allQuestions.filter(q => q.round === round);
+                
+                for (let i = filteredQuestions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [filteredQuestions[i], filteredQuestions[j]] = [filteredQuestions[j], filteredQuestions[i]];
+                }
+
+                questionManager.reset(round);
+                filteredQuestions.forEach(q => questionManager.addQuestion(q, round));
+                
+                io.emit('questions-loaded', {
+                    count: questionManager.getTotalQuestions(),
+                    roundCount: filteredQuestions.length,
+                    round: round,
+                    level: level
+                });
+                console.log(`📚 Loaded ${filteredQuestions.length} ${level.toUpperCase()} questions for Round ${round}`);
+            }
+        } catch (error) {
+            console.error('Error loading academic questions:', error.message);
+            socket.emit('error', { message: error.message });
+        }
+    });
+
+    // Admin: Set Grok API Key
+    socket.on('set-grok-api-key', (data) => {
+        try {
+            grokService.setApiKey(data.apiKey);
+            socket.emit('grok-key-status', { configured: true });
+            addLog('Grok API key configured successfully.');
+            console.log('🔑 Grok API key set by admin');
+        } catch (error) {
+            socket.emit('error', { message: error.message });
+        }
+    });
+
+    // Admin: Generate AI Questions via Grok
+    socket.on('generate-ai-questions', async (data) => {
+        try {
+            const { schoolLevel, round, count } = data;
+            globalSchoolLevel = schoolLevel; // Sync global level
+            
+            if (round === 'all') {
+                socket.emit('ai-generating', { status: 'generating' });
+                console.log(`🤖 Generating 61 ${schoolLevel} questions for the full game...`);
+
+                const fetchOptions = [
+                    {r: 1, c: 20},
+                    {r: 2, c: 20},
+                    {r: 3, c: 20},
+                    {r: 4, c: 1}
+                ];
+
+                let totalGenerated = 0;
+                for (const opt of fetchOptions) {
+                    const questions = await grokService.generateQuestions(schoolLevel, opt.r, opt.c);
+                    questionManager.reset(opt.r);
+                    questions.forEach(q => questionManager.addQuestion(q, opt.r));
+                    totalGenerated += questions.length;
+                    
+                    io.emit('questions-loaded', {
+                        count: questionManager.getTotalQuestions(),
+                        roundCount: questions.length,
+                        round: opt.r
+                    });
+                }
+
+                socket.emit('ai-generating', { status: 'done', count: totalGenerated });
+                console.log(`✅ AI generated ${totalGenerated} questions for the full game`);
+            } else {
+                socket.emit('ai-generating', { status: 'generating' });
+                console.log(`🤖 Generating ${count} ${schoolLevel} questions for Round ${round}...`);
+
+                const questions = await grokService.generateQuestions(schoolLevel, round, count || 5);
+
+                // Add generated questions to the question manager
+                questionManager.reset(round);
+                questions.forEach(q => questionManager.addQuestion(q, round));
+
+                io.emit('questions-loaded', {
+                    count: questionManager.getTotalQuestions(),
+                    roundCount: questions.length,
+                    round: round
+                });
+
+                socket.emit('ai-generating', { status: 'done', count: questions.length });
+                console.log(`✅ AI generated ${questions.length} questions for Round ${round}`);
+            }
+        } catch (error) {
+            socket.emit('ai-generating', { status: 'error', message: error.message });
+            socket.emit('error', { message: error.message });
+            console.error('AI generation error:', error.message);
         }
     });
 
@@ -199,6 +365,10 @@ io.on('connection', (socket) => {
         if (settings.revealDelay !== undefined) {
             runtimeSettings.revealDelay = Math.max(1, Math.min(5, settings.revealDelay));
         }
+        if (settings.schoolLevel !== undefined) {
+            runtimeSettings.schoolLevel = settings.schoolLevel;
+            globalSchoolLevel = settings.schoolLevel;
+        }
         // Broadcast updated settings to all admins
         io.emit('settings-sync', runtimeSettings);
         console.log('⚙️ Settings updated:', runtimeSettings);
@@ -227,57 +397,97 @@ io.on('connection', (socket) => {
 
             // If both players answered and dramatic reveal is enabled
             if (result.bothAnswered && result.revealPending) {
-                // Trigger dramatic reveal sequence
-                setTimeout(() => {
-                    io.emit('reveal-start');
-
-                    // After reveal delay, show results
-                    setTimeout(() => {
-                        const correctAnswer = questionManager.getCorrectAnswer(
-                            gameEngine.getGameState().currentQuestion.id
-                        );
-                        const results = gameEngine.processAnswers(correctAnswer);
-
-                        io.emit('reveal-results', {
-                            correctAnswer,
-                            player1: {
-                                answer: gameEngine.getGameState().players[1].answer,
-                                ...results.player1
-                            },
-                            player2: {
-                                answer: gameEngine.getGameState().players[2].answer,
-                                ...results.player2
-                            }
-                        });
-
-                        // Update scores
-                        io.emit('scores-update', gameEngine.getScores());
-
-                        // Check for sudden death winner
-                        if (gameEngine.getGameState().gameStatus === 'suddenDeath') {
-                            const winner = gameEngine.getSuddenDeathWinner();
-                            if (winner) {
-                                io.emit('game-over', {
-                                    winner,
-                                    finalScores: gameEngine.getScores()
-                                });
-                                return;
-                            }
-                        }
-
-                        // AUTO-ADVANCE: load next question after delay
-                        setTimeout(() => {
-                            autoAdvanceNextQuestion();
-                        }, runtimeSettings.autoAdvanceDelay * 1000);
-
-                    }, runtimeSettings.revealDelay * 1000);
-                }, 100);
+                triggerRevealSequence();
             }
 
         } catch (error) {
             socket.emit('error', { message: error.message });
         }
     });
+
+    function triggerRevealSequence() {
+        // ── SNAPSHOT current state before any async delays ──
+        const snapshotQuestion = gameEngine.getGameState().currentQuestion;
+        if (!snapshotQuestion) return;
+
+        const snapshotCorrectAnswer = snapshotQuestion.correctAnswer ||
+            questionManager.getCorrectAnswer(snapshotQuestion.id);
+
+        // Auto-submit empty answers for players who haven't answered yet
+        const gameState = gameEngine.getGameState();
+        if (!gameState.players[1].answerLocked) gameEngine.submitAnswer(1, '');
+        if (!gameState.players[2].answerLocked) gameEngine.submitAnswer(2, '');
+
+        // Capture player answers NOW before state can change
+        const snapshotP1Answer = gameEngine.getGameState().players[1].answer || '—';
+        const snapshotP2Answer = gameEngine.getGameState().players[2].answer || '—';
+
+        // Trigger dramatic reveal sequence
+        setTimeout(() => {
+            io.emit('reveal-start');
+
+            // --- STEP 1: Show Correct Answer Only ---
+            setTimeout(() => {
+                io.emit('reveal-correct-answer', { correctAnswer: snapshotCorrectAnswer });
+
+                // Start generating explanation as soon as we know it's being revealed
+                const correctAnswerText = snapshotQuestion.options[snapshotCorrectAnswer];
+                grokService.generateExplanation(snapshotQuestion.question, correctAnswerText, globalSchoolLevel)
+                    .then(explanation => {
+                        io.emit('ai-explanation', { explanation });
+                    });
+
+                // --- STEP 2: Show Player Answers and process scores ---
+                setTimeout(() => {
+                    const results = gameEngine.processAnswers(snapshotCorrectAnswer);
+
+                    io.emit('reveal-player-answers', {
+                        player1: {
+                            answer: snapshotP1Answer,
+                            ...results.player1
+                        },
+                        player2: {
+                            answer: snapshotP2Answer,
+                            ...results.player2
+                        }
+                    });
+
+                    // Update scores
+                    io.emit('scores-update', gameEngine.getScores());
+
+                    // Check for sudden death winner
+                    if (gameEngine.getGameState().gameStatus === 'suddenDeath') {
+                        const winner = gameEngine.getSuddenDeathWinner();
+                        if (winner) {
+                            io.emit('game-over', {
+                                winner,
+                                finalScores: gameEngine.getScores()
+                            });
+                            return;
+                        }
+                    } else if (gameEngine.getGameState().currentRound === 4 && questionManager.getNextQuestion() === null) {
+                        // End of 4th round check
+                        const p1Score = gameEngine.getGameState().players[1].score;
+                        const p2Score = gameEngine.getGameState().players[2].score;
+                        if (p1Score !== p2Score) {
+                            io.emit('game-over', {
+                                winner: p1Score > p2Score ? 1 : 2,
+                                finalScores: gameEngine.getScores()
+                            });
+                            return;
+                        }
+                    }
+
+                    // AUTO-ADVANCE: load next question after delay
+                    setTimeout(() => {
+                        autoAdvanceNextQuestion();
+                    }, runtimeSettings.autoAdvanceDelay * 1000);
+
+                }, 2000); // Wait 2s before showing player choices
+
+            }, runtimeSettings.revealDelay * 1000); // Initial dramatic drumroll delay
+        }, 100);
+    }
 
     // Player: Activate lifeline
     socket.on('activate-lifeline', (data) => {
@@ -344,8 +554,6 @@ io.on('connection', (socket) => {
         const currentQ = gameEngine.getGameState().currentQuestion;
         if (!currentQ) return;
 
-        const correctAnswer = questionManager.getCorrectAnswer(currentQ.id);
-
         // Auto-submit null answers for players who didn't answer
         const gameState = gameEngine.getGameState();
         if (!gameState.players[1].answerLocked) {
@@ -355,26 +563,8 @@ io.on('connection', (socket) => {
             gameEngine.submitAnswer(2, '');
         }
 
-        const results = gameEngine.processAnswers(correctAnswer);
-
-        io.emit('reveal-results', {
-            correctAnswer,
-            player1: {
-                answer: gameState.players[1].answer || 'No Answer',
-                ...results.player1
-            },
-            player2: {
-                answer: gameState.players[2].answer || 'No Answer',
-                ...results.player2
-            }
-        });
-
-        io.emit('scores-update', gameEngine.getScores());
-
-        // AUTO-ADVANCE after timer expires too
-        setTimeout(() => {
-            autoAdvanceNextQuestion();
-        }, runtimeSettings.autoAdvanceDelay * 1000);
+        // Use the new dramatic sequence
+        triggerRevealSequence();
     });
 
     // Disconnect handling

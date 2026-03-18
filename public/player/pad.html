@@ -21,7 +21,16 @@
     </div>
 
     <div class="pad-container">
-        <div id="waitingScreen" class="overlay active">
+        <!-- Name Entry Screen -->
+        <div id="nameEntryScreen" class="overlay active">
+            <div class="name-entry-box">
+                <h2>🎮 ENTER YOUR NAME</h2>
+                <input type="text" id="playerNameInput" placeholder="Your name..." maxlength="20" autocomplete="off" />
+                <button class="join-btn" onclick="joinGame()">JOIN GAME</button>
+            </div>
+        </div>
+
+        <div id="waitingScreen" class="overlay">
             <div class="loader"></div>
             <p>Waiting for host to start...</p>
         </div>
@@ -57,6 +66,7 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/shared/audio-engine.js"></script>
     <script src="/player/pad.js"></script>
 </body>
 </html>

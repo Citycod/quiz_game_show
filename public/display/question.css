@@ -323,6 +323,13 @@ body.sudden-death .round-indicator {
     animation: shake 0.5s ease;
 }
 
+.player-answer.blank {
+    background: rgba(255, 255, 255, 0.05);
+    border-style: dashed;
+    border-color: rgba(255, 255, 255, 0.3);
+    color: transparent;
+}
+
 .reveal-vs {
     font-size: 3rem;
     font-weight: 800;
@@ -398,6 +405,7 @@ body.sudden-death .round-indicator {
     font-weight: 800;
     background: linear-gradient(45deg, #f093fb, #f5576c, #ffd700);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
 }
@@ -409,12 +417,126 @@ body.sudden-death .round-indicator {
     margin-top: 20px;
 }
 
+/* Trophy Gamification */
+.trophy-container {
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    z-index: 990;
+    pointer-events: none;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.trophy-container.active {
+    transform: translateX(-50%) scale(1);
+    animation: trophyPulse 2s infinite ease-in-out;
+}
+
+.trophy-icon {
+    font-size: 8rem;
+    filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.8));
+}
+
+@keyframes trophyPulse {
+    0%, 100% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1.1) translateY(-20px); }
+}
+
+/* Screen Recorder UI */
+.recording-indicator {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(220, 38, 38, 0.9);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+    animation: pulseRecording 1.5s infinite alternate;
+}
+
+.recording-indicator.active {
+    display: block;
+}
+
+@keyframes pulseRecording {
+    from { opacity: 1; }
+    to { opacity: 0.5; }
+}
+
+.recording-hint {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.5);
+    padding: 5px 15px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    z-index: 1000;
+    pointer-events: none;
+}
+
 @keyframes slideDown {
     from { opacity: 0; transform: translateY(-30px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── MOBILE RESPONSIVE ───────────────────────────────── */
+/* AI Explanation Box */
+.explanation-box {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    width: 80%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 20px 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 100;
+}
+
+.explanation-box.active {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.explanation-icon {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+.explanation-text {
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.95);
+    text-align: left;
+}
+
+@media (max-width: 600px) {
+    .explanation-box {
+        width: 95%;
+        bottom: 80px;
+        padding: 15px;
+        gap: 15px;
+    }
+    .explanation-icon { font-size: 1.8rem; }
+    .explanation-text { font-size: 1rem; }
+}
 @media (max-width: 900px) {
     .container { padding: 20px; }
     .question-text { font-size: 2rem; }

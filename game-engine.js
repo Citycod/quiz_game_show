@@ -9,6 +9,7 @@ class GameEngine {
             currentQuestion: null,
             players: {
                 1: {
+                    name: 'PLAYER 1',
                     score: 0,
                     streak: 0,
                     penalties: 0,
@@ -18,6 +19,7 @@ class GameEngine {
                     lifelineActive: null
                 },
                 2: {
+                    name: 'PLAYER 2',
                     score: 0,
                     streak: 0,
                     penalties: 0,
@@ -36,10 +38,20 @@ class GameEngine {
         this.responseLogs = [];
     }
 
+    // Set player name
+    setPlayerName(playerId, name) {
+        const player = this.gameState.players[playerId];
+        if (!player) {
+            throw new Error('Invalid player ID');
+        }
+        player.name = name.trim().toUpperCase() || `PLAYER ${playerId}`;
+        return player.name;
+    }
+
     // Start a new round
     startRound(roundNumber) {
-        if (roundNumber < 1 || roundNumber > 3) {
-            throw new Error('Invalid round number. Must be 1, 2, or 3.');
+        if (roundNumber < 1 || roundNumber > 4) {
+            throw new Error('Invalid round number. Must be 1, 2, 3, or 4.');
         }
 
         this.gameState.currentRound = roundNumber;
@@ -52,7 +64,7 @@ class GameEngine {
 
     // Start sudden death mode
     startSuddenDeath() {
-        this.gameState.currentRound = 4; // Special round number for sudden death
+        this.gameState.currentRound = 5; // Special round number for sudden death
         this.gameState.gameStatus = 'suddenDeath';
         this.gameState.roundStartTime = Date.now();
 
@@ -134,18 +146,15 @@ class GameEngine {
 
         let result = { success: true, type: lifelineType };
 
-        // Handle 50/50 - eliminate 2 wrong answers
+        // Handle 50/50 - eliminate all wrong answers except one (leaving 1 right + 1 wrong)
         if (lifelineType === '50/50' && this.gameState.currentQuestion) {
             const correctAnswer = this.gameState.currentQuestion.correctAnswer;
             const options = ['A', 'B', 'C', 'D'];
             const wrongOptions = options.filter(opt => opt !== correctAnswer);
 
-            // Randomly select 2 wrong options to eliminate
-            const toEliminate = [];
-            for (let i = 0; i < 2 && wrongOptions.length > 0; i++) {
-                const randomIndex = Math.floor(Math.random() * wrongOptions.length);
-                toEliminate.push(wrongOptions.splice(randomIndex, 1)[0]);
-            }
+            // Keep one random wrong option, eliminate the rest
+            const keepIndex = Math.floor(Math.random() * wrongOptions.length);
+            const toEliminate = wrongOptions.filter((_, i) => i !== keepIndex);
 
             this.gameState.eliminatedOptions[playerId] = toEliminate;
             result.eliminatedOptions = toEliminate;
@@ -158,11 +167,12 @@ class GameEngine {
     // Process answers and calculate scores
     processAnswers(correctAnswer) {
         const results = {
-            player1: { correct: false, points: 0, streakBroken: false },
-            player2: { correct: false, points: 0, streakBroken: false }
+            player1: { correct: false, points: 0, streakBroken: false, speedBonus: 0 },
+            player2: { correct: false, points: 0, streakBroken: false, speedBonus: 0 }
         };
 
         const roundConfig = this.getCurrentRoundConfig();
+        const speedConfig = this.config.speedBonus || { enabled: false };
 
         [1, 2].forEach(playerId => {
             const player = this.gameState.players[playerId];
@@ -177,6 +187,21 @@ class GameEngine {
 
                 // Calculate base points
                 let points = roundConfig.pointsPerQuestion;
+
+                // Calculate Speed Bonus
+                let bonus = 0;
+                if (speedConfig.enabled && player.answerTime && this.gameState.questionStartTime) {
+                    const timeTakenMs = player.answerTime - this.gameState.questionStartTime;
+                    const timeTakenSec = timeTakenMs / 1000;
+                    
+                    if (timeTakenSec <= speedConfig.thresholdSeconds) {
+                        // Max bonus at 0s, scales down to 0 bonus at thresholdSeconds
+                        const speedRatio = 1 - (timeTakenSec / speedConfig.thresholdSeconds);
+                        bonus = Math.ceil(speedConfig.maxBonus * speedRatio);
+                        playerResult.speedBonus = bonus;
+                    }
+                }
+                points += bonus;
 
                 // Apply lifeline: Double Points
                 if (player.lifelineActive === 'Double Points') {
@@ -271,12 +296,14 @@ class GameEngine {
     getScores() {
         return {
             player1: {
+                name: this.gameState.players[1].name,
                 score: this.gameState.players[1].score,
                 streak: this.gameState.players[1].streak,
                 penalties: this.gameState.players[1].penalties,
                 lifelineUsed: this.gameState.players[1].lifelineUsed
             },
             player2: {
+                name: this.gameState.players[2].name,
                 score: this.gameState.players[2].score,
                 streak: this.gameState.players[2].streak,
                 penalties: this.gameState.players[2].penalties,
@@ -303,8 +330,8 @@ class GameEngine {
             questionStartTime: null,
             currentQuestion: null,
             players: {
-                1: { score: 0, streak: 0, penalties: 0, answer: null, answerLocked: false, lifelineUsed: null, lifelineActive: null },
-                2: { score: 0, streak: 0, penalties: 0, answer: null, answerLocked: false, lifelineUsed: null, lifelineActive: null }
+                1: { name: 'PLAYER 1', score: 0, streak: 0, penalties: 0, answer: null, answerLocked: false, lifelineUsed: null, lifelineActive: null },
+                2: { name: 'PLAYER 2', score: 0, streak: 0, penalties: 0, answer: null, answerLocked: false, lifelineUsed: null, lifelineActive: null }
             },
             gameStatus: 'waiting',
             revealPending: false,

@@ -83,6 +83,7 @@
                         <button class="round-btn" onclick="startRound(1)">ROUND 1</button>
                         <button class="round-btn" onclick="startRound(2)">ROUND 2</button>
                         <button class="round-btn" onclick="startRound(3)">ROUND 3</button>
+                        <button class="round-btn" onclick="startRound(4)">ROUND 4</button>
                     </div>
                 </div>
             </section>
@@ -91,14 +92,56 @@
             <section id="questions" class="tab-content">
                 <div class="question-loader">
                     <h2>DATABASE MANAGEMENT</h2>
+
+                    <div class="upload-box">
+                        <label>Target Academic Level</label>
+                        <select id="schoolLevel" class="admin-select">
+                            <option value="junior">Junior Secondary (Lagos State Curriculum)</option>
+                            <option value="senior" selected>Senior Secondary (WAEC Curriculum)</option>
+                        </select>
+                        <p class="setting-hint">Determines the curriculum used for AI generation and Database loading.</p>
+                    </div>
+
+                    <div class="upload-box">
+                        <label>Target Round</label>
+                        <select id="targetRound" class="admin-select">
+                            <option value="all">Full Game (61 Q's Distributed)</option>
+                            <option value="1">Round 1</option>
+                            <option value="2">Round 2</option>
+                            <option value="3">Round 3</option>
+                            <option value="4">Round 4</option>
+                            <option value="5">Sudden Death</option>
+                        </select>
+                        <p class="setting-hint">Questions will be loaded into this specific round pool.</p>
+                    </div>
+
+                    <!-- AI Question Generation -->
+                    <div class="upload-box ai-section">
+                        <label>🤖 AI Question Generation (Groq)</label>
+                        <div class="input-row">
+                            <input type="number" id="aiQuestionCount" min="1" max="20" value="5" style="width:80px;" placeholder="Count">
+                            <button class="primary-btn ai-btn" id="generateAiBtn" style="margin-top: 0;" onclick="generateAIQuestions()">🤖 GENERATE AI QUESTIONS</button>
+                        </div>
+                        <div id="aiStatus" class="ai-status" style="display:none;"></div>
+                        <p class="setting-hint">Uses Groq AI to generate curriculum-appropriate questions based on selected school level.</p>
+                    </div>
+
                     <div class="upload-box">
                         <label>Load from CSV</label>
                         <div class="input-row">
                             <input type="text" id="csvPath" placeholder="e.g. questions-sample.csv" value="questions-sample.csv">
-                            <button class="action-btn" onclick="loadCSV()">LOAD DATA</button>
+                            <button class="action-btn" onclick="loadCSV()">LOAD CSV</button>
                         </div>
-                        <p id="questionCount">Questions in database: 0</p>
                     </div>
+                    
+                    <div class="upload-box">
+                        <label>Load Academic Database (61 Q's)</label>
+                        <div class="input-row">
+                            <button class="primary-btn" style="margin-top: 0; background: linear-gradient(135deg, #8b5cf6, #3b82f6);" onclick="loadWAEC()">📚 LOAD ACADEMIC QUESTIONS</button>
+                        </div>
+                        <p class="setting-hint">Loads high-rigor questions from the selected level's JSON file.</p>
+                    </div>
+                    <p id="questionCount" style="margin-top: 20px; text-align: center; font-size: 1.2rem;">Questions in database: 0</p>
                 </div>
             </section>
 
@@ -129,6 +172,15 @@
                             <span class="slider-value" id="revealDelayValue">2.5s</span>
                         </div>
                         <p class="setting-hint">Dramatic pause before showing answers</p>
+                    </div>
+                    <div class="setting-card">
+                        <label>🔑 Groq API Key</label>
+                        <div class="input-row">
+                            <input type="password" id="grokApiKey" placeholder="gsk_xxxxxxxxxxxx" style="flex:1;">
+                            <button class="action-btn" onclick="setGrokApiKey()">SAVE KEY</button>
+                        </div>
+                        <p class="setting-hint">Get your key from <a href="https://console.groq.com/keys" target="_blank" style="color:#8b5cf6;">console.groq.com</a></p>
+                        <div id="grokKeyStatus" class="setting-hint" style="color:#10b981;display:none;">✅ Key configured</div>
                     </div>
                 </div>
                 <button class="primary-btn" onclick="saveSettings()">APPLY SETTINGS</button>

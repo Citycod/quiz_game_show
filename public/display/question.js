@@ -26,11 +26,75 @@ const lifelineNotification = document.getElementById('lifelineNotification');
 const lifelineText = document.getElementById('lifelineText');
 const streakCelebration = document.getElementById('streakCelebration');
 const streakMultiplier = document.getElementById('streakMultiplier');
+const explanationBox = document.getElementById('explanationBox');
+const explanationText = document.getElementById('explanationText');
 
 let timerInterval = null;
 let tickInterval = null;
 let currentDuration = 10;
 let timeRemaining = 10;
+
+// Screen Recorder State
+let mediaRecorder = null;
+let recordedChunks = [];
+let isRecording = false;
+const recordingIndicator = document.getElementById('recordingIndicator');
+
+// Screen Recorder Setup
+async function toggleRecording() {
+    if (!isRecording) {
+        try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+                video: { mediaSource: 'screen' },
+                audio: true
+            });
+
+            mediaRecorder = new MediaRecorder(stream);
+            recordedChunks = [];
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) {
+                    recordedChunks.push(e.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `quiz-show-recording-${new Date().toISOString().slice(0,10)}.webm`;
+                a.click();
+                URL.revokeObjectURL(url);
+                isRecording = false;
+                recordingIndicator.classList.remove('active');
+            };
+
+            // Stop recording when user stops sharing via browser UI
+            stream.getVideoTracks()[0].onended = () => {
+                if (isRecording) mediaRecorder.stop();
+            };
+
+            mediaRecorder.start();
+            isRecording = true;
+            recordingIndicator.classList.add('active');
+            console.log('🔴 Recording started');
+        } catch (err) {
+            console.error('Error starting recording:', err);
+            alert('Failed to start recording. Permission denied or not supported.');
+        }
+    } else {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+    }
+}
+
+// Global hotkey for recording: Shift + R
+document.addEventListener('keydown', (e) => {
+    if (e.shiftKey && (e.key === 'R' || e.key === 'r')) {
+        toggleRecording();
+    }
+});
 
 // Round started
 socket.on('round-started', (data) => {
@@ -43,6 +107,12 @@ socket.on('round-started', (data) => {
 
     audio.playRoundTransition();
     audio.startBackgroundMusic();
+    
+    if (round >= 3) {
+        audio.playTension();
+    } else {
+        audio.stopTension();
+    }
 });
 
 // New question loaded
@@ -60,8 +130,15 @@ socket.on('new-question', (question) => {
         opt.style.display = 'flex'; // Restore visibility if hidden by round-end
     });
 
-    // Hide reveal overlay
+    // Hide reveal overlay and explanation
     revealOverlay.classList.remove('active');
+    explanationBox.classList.remove('active');
+});
+
+// AI Explanation received
+socket.on('ai-explanation', (data) => {
+    explanationText.textContent = data.explanation;
+    explanationBox.classList.add('active');
 });
 
 // Timer start
@@ -122,27 +199,45 @@ socket.on('reveal-start', () => {
     audio.playDrumroll();
 });
 
-// Reveal results
-socket.on('reveal-results', (data) => {
-    const { correctAnswer, player1, player2 } = data;
+// Reveal STEP 1: Correct Answer Only
+socket.on('reveal-correct-answer', (data) => {
+    const { correctAnswer } = data;
+
+    // Show blank player answers initially
+    player1Answer.textContent = '?';
+    player2Answer.textContent = '?';
+    player1Answer.className = 'player-answer blank';
+    player2Answer.className = 'player-answer blank';
+
+    // Show correct answer display
+    correctAnswerDisplay.textContent = `Correct Answer: ${correctAnswer}`;
+
+    // Highlight only the correct option
+    document.querySelectorAll('.option').forEach(opt => {
+        const letter = opt.querySelector('.option-letter').textContent;
+        if (letter === correctAnswer) {
+            opt.classList.add('correct');
+        }
+    });
+});
+
+// Reveal STEP 2: Player choices and scores
+socket.on('reveal-player-answers', (data) => {
+    const { player1, player2 } = data;
 
     // Show player answers
     player1Answer.textContent = player1.answer || '—';
     player2Answer.textContent = player2.answer || '—';
 
-    // Mark correct/wrong
+    // Mark correct/wrong for player boxes
     player1Answer.className = 'player-answer ' + (player1.correct ? 'correct' : 'wrong');
     player2Answer.className = 'player-answer ' + (player2.correct ? 'correct' : 'wrong');
 
-    // Show correct answer
-    correctAnswerDisplay.textContent = `Correct Answer: ${correctAnswer}`;
-
-    // Highlight correct option on main display
+    // Highlight wrong options that players chose on main display
     document.querySelectorAll('.option').forEach(opt => {
         const letter = opt.querySelector('.option-letter').textContent;
-        if (letter === correctAnswer) {
-            opt.classList.add('correct');
-        } else if (letter === player1.answer || letter === player2.answer) {
+        // If not already correct and one of the players picked it
+        if (!opt.classList.contains('correct') && (letter === player1.answer || letter === player2.answer)) {
             opt.classList.add('wrong');
         }
     });
@@ -249,6 +344,34 @@ socket.on('game-over', (data) => {
     
     roundText.textContent = `FINAL SCORE: P1(${data.finalScores.player1.score}) - P2(${data.finalScores.player2.score})`;
     audio.stopAll();
+
+    // 👉 Gamification: Display Pulsing Trophy
+    const trophyContainer = document.getElementById('trophyContainer');
+    if (trophyContainer) trophyContainer.classList.add('active');
+
+    // 👉 Gamification: Confetti blast!
+    if (typeof confetti === 'function') {
+        const duration = 15 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        const interval = setInterval(function() {
+            const timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
+            }
+
+            const particleCount = 50 * (timeLeft / duration);
+            // since particles fall down, start a bit higher than random
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+        }, 250);
+    }
 });
 
 // Game paused/resumed
@@ -272,6 +395,7 @@ socket.on('game-reset', () => {
     if (timerInterval) clearInterval(timerInterval);
     audio.stopAll();
     revealOverlay.classList.remove('active');
+    explanationBox.classList.remove('active');
 });
 
 console.log('📺 Question Display connected');
