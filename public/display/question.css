@@ -65,7 +65,7 @@ body.sudden-death .background-animation {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100vh;
+    min-height: 100vh;
     padding: 40px;
     color: white;
 }
