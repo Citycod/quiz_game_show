@@ -9,8 +9,9 @@ body {
     font-family: 'Outfit', sans-serif;
     background: #0f172a;
     color: white;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
