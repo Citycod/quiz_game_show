@@ -207,20 +207,44 @@ function loadCSV() {
     const round = parseInt(document.getElementById('targetRound').value);
     
     if (!file) {
-        alert('Please select a CSV file first.');
+        alert('Please select a file first.');
         return;
     }
 
+    const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
+
     const reader = new FileReader();
     reader.onload = function(e) {
-        const text = e.target.result;
+        let text = "";
+        if (isExcel) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                text = XLSX.utils.sheet_to_csv(worksheet);
+                addLog(`Parsed Excel file. Converting to CSV format...`, true);
+            } catch (err) {
+                alert('Error parsing Excel file. Please ensure it is a valid .xlsx or .xls file.');
+                console.error(err);
+                return;
+            }
+        } else {
+            text = e.target.result;
+        }
+
         socket.emit('upload-questions-csv', { fileData: text, round });
-        addLog(`Uploading CSV for Round ${round}...`);
+        addLog(`Uploading data for Round ${round}...`);
     };
     reader.onerror = function() {
         alert('Error reading file');
     };
-    reader.readAsText(file);
+
+    if (isExcel) {
+        reader.readAsArrayBuffer(file);
+    } else {
+        reader.readAsText(file);
+    }
 }
 
 function loadWAEC() {

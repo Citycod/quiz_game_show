@@ -127,10 +127,10 @@
                     </div>
 
                     <div class="upload-box">
-                        <label>Upload from CSV</label>
+                        <label>Upload from CSV/Excel</label>
                         <div class="input-row">
-                            <input type="file" id="csvFileInput" accept=".csv" style="flex:1; padding: 9px; cursor: pointer;">
-                            <button class="action-btn" onclick="loadCSV()" style="background: #10b981; color: white; border-color: #10b981;">UPLOAD CSV</button>
+                            <input type="file" id="csvFileInput" accept=".csv, .xlsx, .xls" style="flex:1; padding: 9px; cursor: pointer;">
+                            <button class="action-btn" onclick="loadCSV()" style="background: #10b981; color: white; border-color: #10b981;">UPLOAD FILE</button>
                         </div>
                     </div>
                     
@@ -196,6 +196,7 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="/admin/admin.js"></script>
 </body>
 </html>
