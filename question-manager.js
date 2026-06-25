@@ -1,5 +1,6 @@
 const fs = require('fs');
 const csv = require('csv-parser');
+const { Readable } = require('stream');
 
 class QuestionManager {
     constructor() {
@@ -39,6 +40,38 @@ class QuestionManager {
                 .on('end', () => {
                     this.questions[round] = [...this.questions[round], ...newQuestions];
                     console.log(`✅ Loaded ${newQuestions.length} questions for Round ${round} from CSV`);
+                    resolve(newQuestions.length);
+                })
+                .on('error', (error) => {
+                    reject(error);
+                });
+        });
+    }
+
+    // Load questions from CSV raw content for a specific round
+    loadFromCSVContent(csvContent, round = 1) {
+        return new Promise((resolve, reject) => {
+            const newQuestions = [];
+
+            Readable.from([csvContent])
+                .pipe(csv())
+                .on('data', (row) => {
+                    newQuestions.push({
+                        question: row.question,
+                        options: {
+                            A: row.optionA,
+                            B: row.optionB,
+                            C: row.optionC,
+                            D: row.optionD
+                        },
+                        correctAnswer: row.correctAnswer.toUpperCase(),
+                        id: `r${round}-${this.questions[round].length + newQuestions.length + 1}`,
+                        round: parseInt(round)
+                    });
+                })
+                .on('end', () => {
+                    this.questions[round] = [...this.questions[round], ...newQuestions];
+                    console.log(`✅ Loaded ${newQuestions.length} questions for Round ${round} from uploaded CSV`);
                     resolve(newQuestions.length);
                 })
                 .on('error', (error) => {

@@ -202,6 +202,22 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Admin: Load questions from uploaded CSV
+    socket.on('upload-questions-csv', async (data) => {
+        try {
+            const { fileData, round } = data;
+            const targetRound = round || 1;
+            await questionManager.loadFromCSVContent(fileData, targetRound);
+            io.emit('questions-loaded', {
+                count: questionManager.getTotalQuestions(),
+                roundCount: questionManager.getRoundQuestionCount(targetRound),
+                round: targetRound
+            });
+        } catch (error) {
+            socket.emit('error', { message: error.message });
+        }
+    });
+
     // Admin: Load Academic Questions (Legacy event name for compatibility)
     socket.on('load-waec-questions', (data) => {
         try {

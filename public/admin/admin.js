@@ -202,10 +202,25 @@ function resetGame() {
 }
 
 function loadCSV() {
-    const path = document.getElementById('csvPath').value;
+    const fileInput = document.getElementById('csvFileInput');
+    const file = fileInput.files[0];
     const round = parseInt(document.getElementById('targetRound').value);
-    socket.emit('load-questions-csv', { path, round });
-    addLog(`Requesting CSV load for Round ${round}...`);
+    
+    if (!file) {
+        alert('Please select a CSV file first.');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        socket.emit('upload-questions-csv', { fileData: text, round });
+        addLog(`Uploading CSV for Round ${round}...`);
+    };
+    reader.onerror = function() {
+        alert('Error reading file');
+    };
+    reader.readAsText(file);
 }
 
 function loadWAEC() {
